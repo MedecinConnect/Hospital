@@ -1,25 +1,20 @@
-/** @type {import('tailwindcss').Config} */
+// tailwind.config.js
 export default {
-  content:[  "./index.html",
-  "./src/**/*.{js,ts,jsx,tsx}",
-],
+  content: [
+    "./index.html",
+    "./src/**/*.{js,ts,jsx,tsx}",
+  ],
   theme: {
     extend: {
-      colors:{
-      primaryColor:"#0067FF",
-      yellowColor:"#FEB60D",
-      purpleColor:"#9771FF",
-      irisBlueColor:"#01b5CS",
-      headingColor:"#181A1E",
-      textColor:"#4ES45F",
-
-    },
-    boxShadow:{
-      panelShadow:"rgba(17,1,46,0.15) 0px 48px 100px 0px",
-
+      backgroundImage: {
+        'header-bg': "url('/src/assets/images/mask.png')",
+      },
+      colors: {
+        primaryColor: '#3490dc',
+        headingColor: '#1c3d5a',
+        textColor: '#4ES45F',
+      },
     },
   },
-},
   plugins: [],
 }
-

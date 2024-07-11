@@ -21,6 +21,9 @@
   .text-para {
     @apply text-[18px] leading-[30px] font-[400] text-textColor mt-[18px];
   }
+  .header {
+    @apply bg-header-bg bg-cover bg-no-repeat bg-center  w-full h-[100px] leading-[100px];
+  }
 }
 
 @layer utilities {
