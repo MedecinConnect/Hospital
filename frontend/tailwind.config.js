@@ -13,6 +13,8 @@ export default {
         primaryColor: '#3490dc',
         headingColor: '#1c3d5a',
         textColor: '#4ES45F',
+        yellowColor:"#ffaa33",
+        purpleColor :"#de33ff",
       },
     },
   },
