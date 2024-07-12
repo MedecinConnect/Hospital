@@ -4,6 +4,7 @@ import heroImg03 from '../assets/images/hero-img03.png';
 import icon01 from '../assets/images/icon01.png';
 import icon02 from '../assets/images/icon02.png';
 import icon03 from '../assets/images/icon03.png';
+import About from '../componnents/about/About';
 
 import { Link } from 'react-router-dom';
 import { BsArrowRight } from 'react-icons/bs';
@@ -99,6 +100,16 @@ const Home = () => {
           </div>
         </div>
       </section>
+
+<About/>
+
+
+
+
+
+
+
+
     </>
   );
 };
