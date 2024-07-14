@@ -26,6 +26,14 @@
   }
   .hero__section{
     @apply bg-[url('/src/assets/images/hero-bg.png')]  bg-cover bg-no-repeat bg-center;  }
+
+}
+.form__label{
+  @apply text-textColor font-semibold text-[16px] mb-2;
+}
+
+.form__imput{
+  @apply w-full px-4 py-3 border-solid border-[#0066ff61] focus:outline-none focus:border-x-primaryColor text-[16px] leading-7 text-headingColor placeholder:text-textColor cursor-pointer;
 }
 
 @layer utilities {
