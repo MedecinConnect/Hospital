@@ -1,3 +1,5 @@
+import React from 'react';
+import PropTypes from 'prop-types';
 import { BsArrowRight } from 'react-icons/bs';
 import { Link } from 'react-router-dom';
 
@@ -26,6 +28,16 @@ const ServiceCard = ({ item, index }) => {
       </div>
     </div>
   );
+};
+
+ServiceCard.propTypes = {
+  item: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    desc: PropTypes.string.isRequired,
+    bgColor: PropTypes.string,
+    textColor: PropTypes.string,
+  }).isRequired,
+  index: PropTypes.number.isRequired,
 };
 
 export default ServiceCard;
