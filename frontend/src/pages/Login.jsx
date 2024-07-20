@@ -3,12 +3,10 @@ import { Link, useNavigate } from 'react-router-dom';
 import { BASE_URL } from '../../config';
 import { toast } from 'react-toastify';
 import { useAuth } from '../context/AuthContext';
+import { HashLoader } from 'react-spinners';
 
 const Login = () => {
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-  });
+  const [formData, setFormData] = useState({ email: '', password: '' });
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { dispatch } = useAuth();
@@ -24,9 +22,7 @@ const Login = () => {
     try {
       const res = await fetch(`${BASE_URL}/auth/login`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
       });
 
@@ -35,6 +31,7 @@ const Login = () => {
         throw new Error(result.message);
       }
 
+      localStorage.setItem('token', result.token); // Store token in localStorage
       dispatch({
         type: 'LOGIN_SUCCESS',
         payload: {
@@ -44,7 +41,6 @@ const Login = () => {
         },
       });
 
-      console.log(result, 'login data');
       setLoading(false);
       toast.success(result.message);
       navigate('/home');
@@ -84,8 +80,8 @@ const Login = () => {
             />
           </div>
           <div className="mt-7">
-            <button type="submit" className="w-full bg-primaryColor text-white text-[16px] leading-[24px] rounded-lg px-4 py-3">
-              {loading ? 'Loading...' : 'Login'}
+            <button type="submit" className="w-full bg-primaryColor text-white text-[16px] leading-[24px] rounded-lg px-4 py-3 flex justify-center items-center">
+              {loading ? <HashLoader size={25} color="#ffffff" /> : 'Login'}
             </button>
             <p className="mt-5 text-textColor text-center">
               Don&apos;t have an account? <Link to="/register" className="text-primaryColor font-medium ml-1">Register</Link>

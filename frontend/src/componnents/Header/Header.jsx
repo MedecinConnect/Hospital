@@ -1,8 +1,9 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useContext } from 'react';
 import logo from '../../assets/images/logo.png';
-import userImg from '../../assets/images/avatar-icon.png';
 import { NavLink, Link } from 'react-router-dom';
-import {BiMenu} from 'react-icons/bi';
+import { BiMenu } from 'react-icons/bi';
+import { AuthContext } from '../../context/AuthContext';
+
 const navLinks = [
   {
     path: '/home',
@@ -23,27 +24,29 @@ const navLinks = [
 ];
 
 const Header = () => {
-    const headerRef=useRef(null)
-    const menuRef=useRef(null)
+  const headerRef = useRef(null);
+  const menuRef = useRef(null);
+  const { user, role, token, logout } = useContext(AuthContext);
 
-    const  handleStickyHeader=()=>{
-        window.addEventListener('scroll',()=>{
-            if(document.body.scrollTiop>80 || document.documentElement.scrollTop>80){
-                headerRef.current.classList.add("sticky__header")
+  const handleStickyHeader = () => {
+    const handleScroll = () => {
+      if (document.body.scrollTop > 80 || document.documentElement.scrollTop > 80) {
+        headerRef.current.classList.add("sticky__header");
+      } else {
+        headerRef.current.classList.remove("sticky__header");
+      }
+    };
 
-            }else{
-                headerRef.current.classList.remove("sticky__header")
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  };
 
-            }
+  useEffect(() => {
+    handleStickyHeader();
+  }, []);
 
-        })
-    }
-useEffect(()=>{
-    handleStickyHeader()
-    return ()=>window.removeEventListener('scroll',handleStickyHeader)
-})
+  const toggleMenu = () => menuRef.current.classList.toggle('show__menu');
 
-const toggleMenu=()=>menuRef.current.classList.toggle('show__menu')
   return (
     <header className="header flex items-center" ref={headerRef}>
       <div className="container">
@@ -52,7 +55,7 @@ const toggleMenu=()=>menuRef.current.classList.toggle('show__menu')
             <img src={logo} alt="Logo" />
           </div>
 
-          <div className="navigation" ref={menuRef} onClick={toggleMenu}>
+          <div className="navigation" ref={menuRef}>
             <ul className="menu flex items-center gap-[2.7rem]">
               {navLinks.map((link, index) => (
                 <li key={index}>
@@ -70,23 +73,32 @@ const toggleMenu=()=>menuRef.current.classList.toggle('show__menu')
               ))}
             </ul>
           </div>
-          <div className='flex items-center gap-4'>
-            <div className='hidden'>
-            <Link to='/'>
-            <figure className='w-[35px] h[35px] rounded-full cursor-pointer'  >
-               <img src={userImg} className='w-full rounded-full' alt="" /> 
-            </figure>
-            </Link>
+
+          <div className="flex items-center gap-4">
+            {token && user ? (
+              <div className="flex items-center gap-4">
+                <Link to={role === 'doctor' ? '/doctors/profile/me' : '/users/profile/me'}>
+                  <figure className="w-[35px] h-[35px] rounded-full cursor-pointer">
+                    <img src={user?.photo || '/path/to/default/userImg.png'} className="w-full rounded-full" alt="User" />
+                  </figure>
+                  <h2>{user?.name}</h2>
+                </Link>
+                <button onClick={logout} className='bg-primaryColor py-2 px-6 text-white font-[600] h-[44px] flex items-center justify-center rounded-[50px]'>
+                  Logout
+                </button>
+              </div>
+            ) : (
+              <Link to='/login'>
+                <button className='bg-primaryColor py-2 px-6 text-white font-[600] h-[44px] flex items-center justify-center rounded-[50px]'>
+                  Login
+                </button>
+              </Link>
+            )}
           </div>
 
-            <Link to='/Login'>
-              <button className='bg-primaryColor py-2 px-6 text-white font-[600] h-[44px] flex items-center justify-center rounded-[50px]'
-              >Login</button>
-            </Link>
-              <span className='md:hidden' onClick={toggleMenu}>
-                <BiMenu className='w-6 h-6 cursor-pointer'/>
-              </span>
-              </div>
+          <span className='md:hidden' onClick={toggleMenu}>
+            <BiMenu className='w-6 h-6 cursor-pointer' />
+          </span>
         </div>
       </div>
     </header>
