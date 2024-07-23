@@ -9,6 +9,8 @@ import featureImg from '../assets/images/feature-img.png';
 import videoIcon from '../assets/images/video-icon.png';
 import DoctorList from '../componnents/Doctors/DoctorList';
 import ServiceList from '../componnents/services/ServiceList';
+import StreamlitApp from '../componnents/StreamlitApp.jsx';
+
 
 import { Link } from 'react-router-dom';
 import { BsArrowRight } from 'react-icons/bs';
@@ -138,15 +140,7 @@ const Home = () => {
         </div>
       </section>
 
-      <section className="py-16 bg-gray-100">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-10">
-            <h2 className="text-3xl font-bold text-headingColor">Our Doctors</h2>
-            <p className="text-lg text-gray-600 mt-2">Meilleur soins de tout les temps</p>
-          </div>
-          <DoctorList />
-        </div>
-      </section>
+      <StreamlitApp />
     </>
   );
 };
