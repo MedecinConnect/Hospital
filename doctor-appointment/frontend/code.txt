@@ -1,0 +1,66 @@
+// const addQualification = e => {
+  //   e.preventDefault();
+  //   setFormData({
+  //     ...formData,
+  //     qualifications: [
+  //       ...formData.qualifications,
+  //       { startingDate: null, endingDate: null, degree: "", university: "" },
+  //     ],
+  //   });
+  // };
+
+  // // handler change
+  // const handleQualificationChange = (event, index) => {
+  //   const { name, value } = event.target;
+  //   const list = [...formData.qualifications];
+  //   list[index][name] = value;
+
+  //   setFormData({
+  //     ...formData,
+  //     qualifications: list,
+  //   });
+  // };
+
+  // const deleteQualification = (e, index) => {
+  //   e.preventDefault();
+  //   const inputData = [...formData.qualifications];
+  //   inputData.splice(index, 1);
+  //   setFormData({
+  //     ...formData,
+  //     qualifications: inputData,
+  //   });
+  // };
+
+  // // experiences handler
+  // const addExperience = e => {
+  //   e.preventDefault();
+  //   setFormData({
+  //     ...formData,
+  //     experiences: [
+  //       ...formData.experiences,
+  //       { startingDate: null, endingDate: null, position: "", hospital: "" },
+  //     ],
+  //   });
+  // };
+
+  // // handler change
+  // const handleExperienceChange = (event, index) => {
+  //   const { name, value } = event.target;
+  //   const list = [...formData.experiences];
+  //   list[index][name] = value;
+
+  //   setFormData({
+  //     ...formData,
+  //     experiences: list,
+  //   });
+  // };
+
+  // const deleteExperience = (e, index) => {
+  //   e.preventDefault();
+  //   const inputData = [...formData.experiences];
+  //   inputData.splice(index, 1);
+  //   setFormData({
+  //     ...formData,
+  //     experiences: inputData,
+  //   });
+  // };
