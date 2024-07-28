@@ -1,9 +1,10 @@
 import User from "../models/UserSchema.js";
+import Doctor from "../models/DoctorSchema.js";
+import Nurse from "../models/NurseSchema.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import Doctor from "../models/DoctorSchema.js";
 
-// generate token
+// Generate token
 const generateToken = user => {
   return jwt.sign(
     { id: user._id, role: user.role },
@@ -13,25 +14,29 @@ const generateToken = user => {
 };
 
 export const registerUser = async (req, res) => {
-  const { name, email, password, role, photo, gender } = req.body;
+  const { name, email, password, role, photo, gender, department, shift, specialization } = req.body;
 
   try {
     // Check if user already exists
     let user = null;
 
-    // const patient = await User.findOne({ email });
-    // const doctor = await Doctor.findOne({ email });
     if (role === "patient") {
       user = await User.findOne({ email });
     } else if (role === "doctor") {
       user = await Doctor.findOne({ email });
+    } else if (role === "nurse") {
+      user = await Nurse.findOne({ email });
+    } else if (role === "admin") {
+      user = await User.findOne({ email, role: "admin" });
+    } else {
+      return res.status(400).json({ message: "Invalid role specified" });
     }
 
     if (user) {
       return res.status(400).json({ message: "User already exists" });
     }
 
-    // hashing password
+    // Hashing password
     const salt = await bcrypt.genSalt(10);
     const hashPassword = await bcrypt.hash(password, salt);
 
@@ -45,26 +50,39 @@ export const registerUser = async (req, res) => {
         gender,
         role,
       });
-    }
-    if (role === "doctor") {
+    } else if (role === "doctor") {
       user = new Doctor({
         name,
         email,
         password: hashPassword,
         photo,
-        gender,
+        specialization,
+        role,
+      });
+    } else if (role === "nurse") {
+      user = new Nurse({
+        name,
+        email,
+        password: hashPassword,
+        photo,
+        department,
+        shift,
+        role,
+      });
+    } else if (role === "admin") {
+      user = new User({
+        name,
+        email,
+        password: hashPassword,
         role,
       });
     }
 
     await user.save();
-    res
-      .status(200)
-      .json({ success: true, message: "user successfully created" });
+    res.status(200).json({ success: true, message: "User successfully created" });
   } catch (err) {
-    res
-      .status(500)
-      .json({ success: false, message: "Internal server error! Try again" });
+    console.error("Error during user registration:", err); // Log the exact error
+    res.status(500).json({ success: false, message: "Internal server error! Try again" });
   }
 };
 
