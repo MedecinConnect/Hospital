@@ -46,7 +46,7 @@ const Header = () => {
   useEffect(() => {
     stickyHeaderFunc();
 
-    return window.removeEventListener("scroll", stickyHeaderFunc);
+    return () => window.removeEventListener("scroll", stickyHeaderFunc);
   }, []);
 
   const toggleMenu = () => menuRef.current.classList.toggle("show__menu");
@@ -88,6 +88,8 @@ const Header = () => {
                   to={`${
                     role === "doctor"
                       ? "/doctors/profile/me"
+                      : role === "nurse"
+                      ? "/nurses/profile/me"
                       : "/users/profile/me"
                   } `}
                 >

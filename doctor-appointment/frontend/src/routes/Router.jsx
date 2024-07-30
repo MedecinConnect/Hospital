@@ -11,6 +11,7 @@ import ProtectedRoute from "./ProtectedRoute";
 import DoctorDetails from "../pages/Doctors/DoctorDetails";
 import Contact from "../pages/Contact";
 import CheckoutSuccess from "../pages/CheckoutSuccess";
+import NurseAccount from "../Dashboard/NurseAccount/NurseAccount";
 
 const Router = () => {
   return (
@@ -33,6 +34,15 @@ const Router = () => {
         element={
           <ProtectedRoute allowedRoles={["doctor"]}>
             <Dashboard />
+          </ProtectedRoute>
+        }
+      />
+
+<Route
+        path="/nurses/profile/me"
+        element={
+          <ProtectedRoute allowedRoles={["nurse"]}>
+            <NurseAccount />
           </ProtectedRoute>
         }
       />

@@ -85,44 +85,22 @@ export const registerUser = async (req, res) => {
     res.status(500).json({ success: false, message: "Internal server error! Try again" });
   }
 };
-
 export const login = async (req, res) => {
-  const { email } = req.body;
+  const { email, password } = req.body;
 
   try {
-    let user = null;
+    let user = await User.findOne({ email }) || await Doctor.findOne({ email }) || await Nurse.findOne({ email });
 
-    // Check the user's role and retrieve from the appropriate collection
-    const patient = await User.findOne({ email });
-    const doctor = await Doctor.findOne({ email });
-
-    if (patient) {
-      user = patient;
-    } else if (doctor) {
-      user = doctor;
-    }
-
-    // Check if user exists
     if (!user) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Invalid Credentials" });
+      return res.status(400).json({ success: false, message: "Invalid Credentials" });
     }
 
-    // check password
-    const isPasswordMatch = await bcrypt.compare(
-      req.body.password,
-      user.password
-    );
+    const isPasswordMatch = await bcrypt.compare(password, user.password);
     if (!isPasswordMatch) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Invalid Credentials" });
+      return res.status(400).json({ success: false, message: "Invalid Credentials" });
     }
 
-    const { password, role, appointments, ...rest } = user._doc;
-
-    // get token
+    const { password: pwd, ...rest } = user._doc;
     const token = generateToken(user);
 
     res.status(200).json({
@@ -130,7 +108,7 @@ export const login = async (req, res) => {
       message: "Successfully login",
       token,
       data: { ...rest },
-      role,
+      role: user.role,
     });
   } catch (error) {
     res.status(500).json({ success: false, message: "Failed to login" });
