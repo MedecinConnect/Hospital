@@ -76,6 +76,7 @@ const Home = () => {
               { img: icon01, title: 'Find a doctor', link: '/doctors' },
               { img: icon02, title: 'Savoir Localisation', link: '/locations' },
               { img: icon03, title: 'Prendre un Rendez-vous', link: '/appointments' },
+              { img: icon01, title: 'ConsultationIA', link: '/consultationia' },  // Ajouter ici
             ].map((item, index) => (
               <div key={index} className="py-8 px-6 flex flex-col items-center text-center border border-gray-200 rounded-lg shadow-lg transition duration-300 ease-in-out transform hover:scale-105">
                 <img src={item.img} alt={item.title} className="w-16 h-16 mb-4" />
@@ -139,8 +140,6 @@ const Home = () => {
           </div>
         </div>
       </section>
-
-      <StreamlitApp />
     </>
   );
 };

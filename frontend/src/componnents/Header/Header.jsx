@@ -21,6 +21,10 @@ const navLinks = [
     path: '/contact',
     display: 'Contact',
   },
+  {
+    path: '/consultationia', // Nouveau lien ajouté ici
+    display: 'ConsultationIA',
+  },
 ];
 
 const Header = () => {

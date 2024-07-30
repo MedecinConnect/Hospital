@@ -3,12 +3,13 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
+import { createProxyMiddleware } from 'http-proxy-middleware';
 
 // Importer les routes
-import authRoutes from './Routes/auth.js'; // Notez le .js à la fin
-import userRoutes from './Routes/user.js'; // Notez le .js à la fin
-import doctorRoutes from './Routes/doctor.js'; // Notez le .js à la fin
-import reviewRoutes from './Routes/review.js'; // Notez le .js à la fin
+import authRoutes from './Routes/auth.js';
+import userRoutes from './Routes/user.js';
+import doctorRoutes from './Routes/doctor.js';
+import reviewRoutes from './Routes/review.js';
 
 dotenv.config();
 
@@ -29,6 +30,15 @@ app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/doctors', doctorRoutes);
 app.use('/api/v1/reviews', reviewRoutes);
+
+// Proxy vers l'application Streamlit
+app.use('/docbotchat', createProxyMiddleware({
+  target: 'http://localhost:8501', // L'URL de l'application Streamlit
+  changeOrigin: true,
+  pathRewrite: {
+    '^/docbotchat': '', // Supprime le préfixe /docbotchat
+  },
+}));
 
 // Database connection
 mongoose.set('strictQuery', false);
