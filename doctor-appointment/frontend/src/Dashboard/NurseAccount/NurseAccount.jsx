@@ -5,7 +5,6 @@ import HashLoader from "react-spinners/HashLoader";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 import useFetchData from "../../hooks/useFetchData";
-
 const NurseAccount = () => {
     const [tab, setTab] = useState("settings");
     const {
@@ -92,6 +91,7 @@ const NurseAccount = () => {
                       <Profile userData={nurseData} />
                     </div>
                   )}
+                  
                 </div>
               </div>
             </div>

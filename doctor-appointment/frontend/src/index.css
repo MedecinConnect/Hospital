@@ -18,11 +18,11 @@
   }
 
   .header {
-    @apply bg-[url('./assets/images/mask.png')] bg-no-repeat bg-cover bg-center w-full h-[100px] leading-[100px];
+    @apply bg-[url('./assets/images/mask2.png')] bg-no-repeat bg-cover bg-center w-full h-[100px] leading-[100px];
   }
 
   .hero__section {
-    @apply bg-[url('./assets/images/hero-bg.png')] bg-no-repeat bg-cover bg-center;
+    @apply bg-[url('./assets/images/hero3.png')] bg-no-repeat bg-cover bg-center;
   }
 
   .text__para {

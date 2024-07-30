@@ -16,6 +16,8 @@ import avatarIcon from "../assets/images/avatar-icon.png";
 import DoctorsList from "../components/Doctors/DoctorsList";
 import Testimonial from "../components/Testimonial/Testimonial";
 import FaqList from "../components/Faq/FaqList";
+import BedsList from "./nurse/BedsList.jsx";
+
 
 const Home = () => {
   return (
@@ -288,6 +290,12 @@ const Home = () => {
           <Testimonial />
         </div>
       </section>
+
+      <section className="container">
+        <h2 className="heading text-center">Available Beds</h2>
+        <BedsList />
+      </section>
+
       <section className="container">
         <h2 className="heading text-center">Chat with Resumes</h2>
         <iframe
