@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import signupImg from "../assets/images/signup.gif";
+//import signupImg from "../assets/images/signup.gif";
 import { BASE_URL } from "../config";
 import { toast } from "react-toastify";
 import uploadImageToCloudinary from "../utils/uploadCloudinary";
@@ -65,15 +65,21 @@ const SignUp = () => {
   };
 
   return (
+    
     <section className="px-5 xl:px-0">
-      <div className="max-w-[1170px] mx-auto ">
-        <div className="grid grid-cols-1 lg:grid-cols-2 ">
-          {/* ============ img box ========= */}
-          <div className="hidden lg:block bg-[#0067FF] rounded-l-lg">
-            <figure className="rounded-l-lg">
-              <img className="w-full rounded-l-lg" src={signupImg} alt="" />
-            </figure>
-          </div>
+      
+  <div className="max-w-[1170px] mx-auto ">
+      
+  <div className="max-w-[1170px] mx-auto ">
+    <div className="grid grid-cols-1 lg:grid-cols-2 ">
+      {/* ============ img box ========= */}
+      {/*<div className="hidden lg:block bg-[#0067FF] rounded-l-lg">
+        <figure className="rounded-l-lg">*/}
+          {/* ============ 
+          <img className="w-full rounded-l-lg" src={signupImg} alt="" /> 
+          ============ </figure> */}
+       
+      </div>
 
           <div className="rounded-l-lg  lg:pl-16 py-10">
             <h3 className="text-headingColor text-[22px] leading-9 font-bold mb-10">
@@ -128,7 +134,7 @@ const SignUp = () => {
                     <option value="patient">Patient</option>
                     <option value="doctor">Doctor</option>
                     <option value="nurse">Nurse</option>
-                    <option value="admin">Admin</option>
+                    {/*  <option value="admin">Admin</option> /** */}
                   </select>
                 </label>
 

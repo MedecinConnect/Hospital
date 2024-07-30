@@ -81,7 +81,7 @@ export const registerUser = async (req, res) => {
     await user.save();
     res.status(200).json({ success: true, message: "User successfully created" });
   } catch (err) {
-    console.error("Error during user registration:", err); // Log the exact error
+    console.error("Error during user registration:", err); 
     res.status(500).json({ success: false, message: "Internal server error! Try again" });
   }
 };

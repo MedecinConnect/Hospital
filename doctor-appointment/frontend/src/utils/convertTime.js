@@ -1,4 +1,9 @@
+// convertTime.js
 const convertTime = time => {
+  if (!time) {
+    return "Invalid time"; // Ou tout autre message par défaut
+  }
+
   const timeParts = time.split(":");
   let hours = parseInt(timeParts[0]);
   const minutes = parseInt(timeParts[1]);

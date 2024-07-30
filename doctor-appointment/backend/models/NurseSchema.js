@@ -18,6 +18,11 @@ const NurseSchema = new mongoose.Schema({
   experiences: {
     type: Array,
   },
+  isApproved: {
+    type: String,
+    enum: ["pending", "approved", "cancelled"],
+    default: "pending",
+  },
 });
 
 export default mongoose.model("Nurse", NurseSchema);
