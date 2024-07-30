@@ -26,7 +26,6 @@ export const getCheckoutSession = async (req, res) => {
 
     console.log("Doctor and user found:", doctor, user);
 
-    // Ajustez le prix du ticket pour être sûr qu'il est suffisamment élevé
     const ticketPrice = doctor.ticketPrice; // Assurez-vous que le prix est suffisamment élevé
 
     // create checkout session

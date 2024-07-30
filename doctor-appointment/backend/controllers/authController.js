@@ -4,7 +4,6 @@ import Nurse from "../models/NurseSchema.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
-// Generate token
 const generateToken = user => {
   return jwt.sign(
     { id: user._id, role: user.role },
@@ -17,7 +16,6 @@ export const registerUser = async (req, res) => {
   const { name, email, password, role, photo, gender, department, shift, specialization } = req.body;
 
   try {
-    // Check if user already exists
     let user = null;
 
     if (role === "patient") {
@@ -36,7 +34,6 @@ export const registerUser = async (req, res) => {
       return res.status(400).json({ message: "User already exists" });
     }
 
-    // Hashing password
     const salt = await bcrypt.genSalt(10);
     const hashPassword = await bcrypt.hash(password, salt);
 
