@@ -5,19 +5,23 @@ import Nurse from "../models/NurseSchema.js";
 
 export const authenticate = async (req, res, next) => {
   const authToken = req.headers.authorization;
+  console.log("authToken:", authToken); // Log added
 
   if (!authToken || !authToken.startsWith("Bearer ")) {
+    console.log("No token or invalid token format");
     return res.status(401).json({ message: "No token, authorization denied" });
   }
 
   try {
     const token = authToken.split(" ")[1];
     const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
+    console.log("decoded token:", decoded); // Log added
 
     req.userId = decoded.id;
     req.role = decoded.role;
     next();
   } catch (err) {
+    console.log("Error verifying token:", err); // Log added
     if (err.name === "TokenExpiredError") {
       return res.status(401).json({ success: false, message: "Token has expired" });
     }
@@ -28,8 +32,10 @@ export const authenticate = async (req, res, next) => {
 
 export const restrict = roles => async (req, res, next) => {
   const userId = req.userId;
+  console.log("User ID from token:", userId); // Log added
 
   let user = await User.findById(userId) || await Doctor.findById(userId) || await Nurse.findById(userId);
+  console.log("User found:", user); // Log added
 
   if (!user || !roles.includes(user.role)) {
     return res.status(401).json({ success: false, message: "You're not authorized" });

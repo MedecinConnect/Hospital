@@ -75,3 +75,11 @@ export const getCheckoutSession = async (req, res) => {
       .json({ success: false, message: "Error creating checkout session", error: error.message });
   }
 };
+export const getAppointments = async (req, res) => {
+  try {
+    const bookings = await Booking.find({ user: req.userId }).populate('doctor');
+    res.status(200).json({ appointments: bookings });
+  } catch (err) {
+    res.status(500).json({ message: 'Failed to fetch appointments' });
+  }
+};

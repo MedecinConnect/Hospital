@@ -17,11 +17,36 @@ import DoctorsList from "../components/Doctors/DoctorsList";
 import Testimonial from "../components/Testimonial/Testimonial";
 import FaqList from "../components/Faq/FaqList";
 import BedsList from "./nurse/BedsList.jsx";
+import { useContext, useEffect, useState } from "react";
+import { AuthContext } from "../context/AuthContext.jsx";
 
 
 const Home = () => {
+  const { message } = useContext(AuthContext);
+  const [showPopup, setShowPopup] = useState(false);
+
+  
+  useEffect(() => {
+    if (message) {
+      setShowPopup(true);
+      const timer = setTimeout(() => {
+        setShowPopup(false);
+      }, 10000); // 30000ms = 30 seconds
+
+      // Cleanup the timeout if the component unmounts
+      return () => clearTimeout(timer);
+    }
+  }, [message]);
+
   return (
     <>
+     {showPopup && (
+        <div className="fixed top-1/4 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white border border-gray-300 shadow-lg z-50 p-4 rounded-lg max-w-md w-full text-center">
+          <div className="text-lg text-gray-800">
+            {message}
+          </div>
+        </div>
+      )}
       {/* <section className="hero__section pt-[60px] 2xl:h-[800px]">
         <div className="container">
           <div className="flex flex-col lg:flex-row gap-[90px] items-center justify-between">
@@ -227,10 +252,9 @@ const Home = () => {
        <section>
         <div className="container">
           <div className="xl:w-[470px] mx-auto">
-            <h2 className="heading text-center">Our great doctors</h2>
+            <h2 className="heading text-center">Nos docteurs</h2>
             <p className="text__para text-center">
-              World-class care for everyone. Our health System offers unmatched,
-              expert health care.
+              Multi-taches 
             </p>
           </div>
           <DoctorsList />
@@ -272,7 +296,7 @@ const Home = () => {
       </section>
 
      <section className="container">
-        <h2 className="heading text-center">Chat with Resumes</h2>
+        <h2 className="heading text-center">Prediction de maladie</h2>
         <iframe
           src="http://localhost:8501"
           width="100%"
