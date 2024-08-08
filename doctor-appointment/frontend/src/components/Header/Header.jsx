@@ -1,4 +1,4 @@
-import logo from "../../assets/images/logo.png";
+import logo from "../../assets/images/logo5.png";
 import { NavLink, Link } from "react-router-dom";
 import { BiMenu } from "react-icons/bi";
 import { useContext, useEffect, useRef } from "react";
@@ -46,7 +46,7 @@ const Header = () => {
   useEffect(() => {
     stickyHeaderFunc();
 
-    return window.removeEventListener("scroll", stickyHeaderFunc);
+    return () => window.removeEventListener("scroll", stickyHeaderFunc);
   }, []);
 
   const toggleMenu = () => menuRef.current.classList.toggle("show__menu");
@@ -88,6 +88,8 @@ const Header = () => {
                   to={`${
                     role === "doctor"
                       ? "/doctors/profile/me"
+                      : role === "nurse"
+                      ? "/nurses/profile/me"
                       : "/users/profile/me"
                   } `}
                 >

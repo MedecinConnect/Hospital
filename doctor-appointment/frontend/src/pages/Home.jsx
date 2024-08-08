@@ -16,14 +16,40 @@ import avatarIcon from "../assets/images/avatar-icon.png";
 import DoctorsList from "../components/Doctors/DoctorsList";
 import Testimonial from "../components/Testimonial/Testimonial";
 import FaqList from "../components/Faq/FaqList";
+import BedsList from "./nurse/BedsList.jsx";
+import { useContext, useEffect, useState } from "react";
+import { AuthContext } from "../context/AuthContext.jsx";
+
 
 const Home = () => {
+  const { message } = useContext(AuthContext);
+  const [showPopup, setShowPopup] = useState(false);
+
+  
+  useEffect(() => {
+    if (message) {
+      setShowPopup(true);
+      const timer = setTimeout(() => {
+        setShowPopup(false);
+      }, 10000); // 30000ms = 30 seconds
+
+      // Cleanup the timeout if the component unmounts
+      return () => clearTimeout(timer);
+    }
+  }, [message]);
+
   return (
     <>
-      <section className="hero__section pt-[60px] 2xl:h-[800px]">
+     {showPopup && (
+        <div className="fixed top-1/4 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white border border-gray-300 shadow-lg z-50 p-4 rounded-lg max-w-md w-full text-center">
+          <div className="text-lg text-gray-800">
+            {message}
+          </div>
+        </div>
+      )}
+      {/* <section className="hero__section pt-[60px] 2xl:h-[800px]">
         <div className="container">
           <div className="flex flex-col lg:flex-row gap-[90px] items-center justify-between">
-            {/* ====== hero content ========== */}
             <div>
               <div className=" lg:w-[570px]">
                 <h1 className="text-headingColor text-[36px] leading-[46px] md:text-[60px] md:leading-[70px] font-[800] ">
@@ -37,7 +63,6 @@ const Home = () => {
                 </p>
                 <button className="btn">Request an Appointment </button>
               </div>
-
               <div className="mt-[30px] lg:mt-[70px] flex flex-col md:flex-row lg:items-center gap-5 lg:gap-[30px]">
                 <div>
                   <h2 className="text-[36px] leading-[56px] lg:text-[44px] lg:leading-[54px] font-[700] text-headingColor">
@@ -46,7 +71,6 @@ const Home = () => {
                   <span className="w-[100px] h-2 rounded-full bg-yellowColor block mt-[-14px]"></span>
                   <p className="text__para">Years of Experience</p>
                 </div>
-
                 <div>
                   <h2 className="text-[36px] leading-[56px] lg:text-[44px] lg:leading-[54px] font-[700] text-headingColor">
                     15+
@@ -54,7 +78,6 @@ const Home = () => {
                   <span className="w-[100px] h-2 rounded-full bg-purpleColor block mt-[-14px]"></span>
                   <p className="text__para">Clinic Location</p>
                 </div>
-
                 <div>
                   <h2 className="text-[36px] leading-[56px] lg:text-[44px] lg:leading-[54px] font-[700] text-headingColor">
                     100%
@@ -64,8 +87,6 @@ const Home = () => {
                 </div>
               </div>
             </div>
-
-            {/* =========== hero img ============ */}
             <div className="flex gap-[30px] justify-end">
               <div>
                 <img className="w-full" src={heroImg01} alt="hero_img" />
@@ -81,9 +102,9 @@ const Home = () => {
             </div>
           </div>
         </div>
-      </section>
+      </section> */}
 
-      <section>
+      {/* <section>
         <div className="container ">
           <div className="lg:w-[470px] mx-auto">
             <h2 className="heading text-center">
@@ -94,13 +115,11 @@ const Home = () => {
               expert health care.
             </p>
           </div>
-
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-[30px] mt-[30px] lg:mt-[55px]">
             <div className="py-[30px] px-5 ">
               <div className="flex items-center justify-center">
                 <img src={icon01} alt="" />
               </div>
-
               <div className="mt-[30px]">
                 <h2 className="text-[26px] leading-9 text-headingColor font-[700] text-center">
                   Find a Doctor
@@ -109,7 +128,6 @@ const Home = () => {
                   World-class care for everyone. Our health System offers
                   unmatched, expert health care. From the lab to the clinic.
                 </p>
-
                 <Link
                   to="/doctors"
                   className="w-[44px] h-[44px] rounded-full border border-solid border-[#181A1E] mt-[30px] mx-auto flex items-center justify-center group hover:bg-buttonBgColor hover:border-none"
@@ -118,12 +136,10 @@ const Home = () => {
                 </Link>
               </div>
             </div>
-
             <div className="py-[30px] px-5 ">
               <div className="flex items-center justify-center">
                 <img src={icon02} alt="" />
               </div>
-
               <div className="mt-[30px]">
                 <h2 className="text-[26px] leading-9 text-headingColor font-[700] text-center">
                   Find a Location
@@ -132,7 +148,6 @@ const Home = () => {
                   World-class care for everyone. Our health System offers
                   unmatched, expert health care. From the lab to the clinic.
                 </p>
-
                 <Link
                   to="/doctors"
                   className="w-[44px] h-[44px] rounded-full border border-solid border-[#181A1E] mt-[30px] mx-auto flex items-center justify-center group hover:bg-buttonBgColor hover:border-none"
@@ -145,7 +160,6 @@ const Home = () => {
               <div className="flex items-center justify-center">
                 <img src={icon03} alt="" />
               </div>
-
               <div className="mt-[30px]">
                 <h2 className="text-[26px] leading-9 text-headingColor font-[700] text-center">
                   Book Appointment
@@ -154,7 +168,6 @@ const Home = () => {
                   World-class care for everyone. Our health System offers
                   unmatched, expert health care. From the lab to the clinic.
                 </p>
-
                 <Link
                   to="/doctors"
                   className="w-[44px] h-[44px] rounded-full border border-solid border-[#181A1E] mt-[30px] mx-auto flex items-center justify-center group hover:bg-buttonBgColor hover:border-none"
@@ -165,11 +178,11 @@ const Home = () => {
             </div>
           </div>
         </div>
-      </section>
+      </section> */}
 
-      <About />
+      {/* <About /> */}
 
-      <section>
+      {/* <section>
         <div className="container">
           <div className="xl:w-[470px] mx-auto">
             <h2 className="heading text-center">Our medical services</h2>
@@ -178,15 +191,13 @@ const Home = () => {
               expert health care.
             </p>
           </div>
-
           <ServicesList />
         </div>
-      </section>
+      </section> */}
 
-      <section>
+      {/* <section>
         <div className="container">
           <div className="flex justify-between items-center flex-col lg:flex-row">
-            {/* =========== feature content ============ */}
             <div className="xl:w-[670px]">
               <h2 className="heading">
                 Get virtual treatment <br /> anytime.
@@ -207,11 +218,8 @@ const Home = () => {
                 <button className="btn">Learn More</button>
               </Link>
             </div>
-
-            {/* ========= feature img ======== */}
             <div className="relative z-10  xl:w-[770px] flex justify-end mt-[50px] lg:mt-0">
               <img src={featureImg} className="w-3/4" alt="about_img" />
-
               <div className="w-[150px] lg:w-[248px] bg-white absolute bottom-[50px] left-0  md:bottom-[100px]  md:left-[20px] z-20 p-2 pb-3 lg:pt-4 lg:px-4 lg:pb-[26px] rounded-[10px]">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-[6px] lg:gap-3">
@@ -226,11 +234,9 @@ const Home = () => {
                     <img src={videoIcon} alt="" />
                   </span>
                 </div>
-
                 <div className="w-[65px] lg:w-[96px] bg-[#CCF0F3] py-1 px-2 lg:py-[6px] lg:px-[10px] rounded-full  text-[8px] leading-[8px] lg:text-[12px] lg:leading-4 font-[500] text-irisBlueColor mt-2 lg:mt-4 ">
                   Consultation
                 </div>
-
                 <div className="flex items-center gap-[6px] lg:gap-[10px] mt-2 lg:mt-[18px]">
                   <img src={avatarIcon} alt="" />
                   <h4 className="text-[10px] leading-3 lg:text-[16px] lg:leading-[22px] font-[700] text-headingColor">
@@ -241,41 +247,37 @@ const Home = () => {
             </div>
           </div>
         </div>
-      </section>
+      </section> */}
 
-      <section>
+       <section>
         <div className="container">
           <div className="xl:w-[470px] mx-auto">
-            <h2 className="heading text-center">Our great doctors</h2>
+            <h2 className="heading text-center">Nos docteurs</h2>
             <p className="text__para text-center">
-              World-class care for everyone. Our health System offers unmatched,
-              expert health care.
+              Multi-taches 
             </p>
           </div>
-
           <DoctorsList />
         </div>
-      </section>
+      </section> 
 
-      <section>
+      {/* <section>
         <div className="container">
           <div className="flex justify-between gap-[50px] lg:gap-0">
             <div className="w-1/2 hidden md:block">
               <img src={faqImg} alt="" />
             </div>
-
             <div className="w-full md:w-1/2">
               <h2 className="heading">
                 Most questions by our beloved patients
               </h2>
-
               <FaqList />
             </div>
           </div>
         </div>
-      </section>
+      </section> */}
 
-      <section>
+      {/* <section>
         <div className="container">
           <div className="xl:w-[470px] mx-auto">
             <h2 className="heading text-center">What our patient say</h2>
@@ -284,10 +286,24 @@ const Home = () => {
               expert health care.
             </p>
           </div>
-
           <Testimonial />
         </div>
+      </section> */}
+
+      <section className="container">
+        <h2 className="heading text-center">Available Beds</h2>
+        <BedsList />
       </section>
+
+     <section className="container">
+        <h2 className="heading text-center">Prediction de maladie</h2>
+        <iframe
+          src="http://localhost:8501"
+          width="100%"
+          height="600px"
+          title="Chat with Resumes"
+        ></iframe>
+      </section> 
     </>
   );
 };

@@ -1,4 +1,4 @@
-import logo from "../../assets/images/logo.png";
+import logo from "../../assets/images/logo5.png";
 import { Link } from "react-router-dom";
 import { RiLinkedinFill } from "react-icons/ri";
 import {

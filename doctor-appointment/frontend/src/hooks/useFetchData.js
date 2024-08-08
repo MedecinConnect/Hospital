@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
-import { token } from "../config";
-
+import { useContext, useEffect, useState } from "react";
+//import { token } from "../config";
+import { AuthContext } from "../context/AuthContext";
 const useFetchData = url => {
+  const { token } = useContext(AuthContext);
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -17,7 +18,7 @@ const useFetchData = url => {
         const result = await res.json();
 
         if (!res.ok) {
-          throw new Error(result.message + " 🤢");
+          throw new Error(result.message + " ");
         }
 
         setData(result.data);
@@ -29,7 +30,7 @@ const useFetchData = url => {
     };
 
     fetchData();
-  }, [url]);
+  }, [url, token]);
 
   return {
     data,

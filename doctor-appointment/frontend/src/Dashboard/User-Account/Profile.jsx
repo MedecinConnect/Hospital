@@ -13,24 +13,24 @@ const Profile = ({ userData }) => {
     password: "",
     gender: "",
     bloodType: "",
-    photo: null,
+    photo: "",
   });
 
   useEffect(() => {
     setFormData({
-      name: userData.name,
-      email: userData.email,
-      bloodType: userData.bloodType,
-      gender: userData.gender,
-      photo: userData.photo,
+      name: userData?.name || "",
+      email: userData?.email || "",
+      bloodType: userData?.bloodType || "",
+      gender: userData?.gender || "",
+      photo: userData?.photo || "",
     });
   }, [userData]);
 
-  const handleInputChange = e => {
+  const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleFileInputChange = async event => {
+  const handleFileInputChange = async (event) => {
     const file = event.target.files[0];
     const data = await uploadImageToCloudinary(file);
 
@@ -38,7 +38,7 @@ const Profile = ({ userData }) => {
     setFormData({ ...formData, photo: data.url });
   };
 
-  const updateUserHandler = async e => {
+  const updateUserHandler = async (e) => {
     e.preventDefault();
 
     try {
@@ -48,7 +48,6 @@ const Profile = ({ userData }) => {
           "content-type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-
         body: JSON.stringify(formData),
       });
 
@@ -88,7 +87,6 @@ const Profile = ({ userData }) => {
             aria-readonly
           />
         </div>
-
         <div className="mb-5">
           <input
             type="password"
@@ -99,7 +97,6 @@ const Profile = ({ userData }) => {
             className="w-full pr-4 py-3 border-b border-solid border-[#0066ff61] focus:outline-none focus:border-b-[#0067FF] text-[16px] leading-7 text-headingColor placeholder:text-textColor"
           />
         </div>
-
         <div className="mb-5">
           <input
             type="text"
@@ -110,7 +107,6 @@ const Profile = ({ userData }) => {
             className="w-full pr-4 py-3 border-b border-solid border-[#0066ff61] focus:outline-none focus:border-b-[#0067FF] text-[16px] leading-7 text-headingColor placeholder:text-textColor"
           />
         </div>
-
         <div className="mb-5 flex items-center justify-between">
           <label className="text-headingColor font-bold text-[16px] leading-7]">
             Gender:
@@ -127,7 +123,6 @@ const Profile = ({ userData }) => {
             </select>
           </label>
         </div>
-
         <div className="mb-5 flex items-center gap-3">
           {formData.photo && (
             <figure className="w-[60px] h-[60px] rounded-full border-2 border-solid border-[#0067FF] flex items-center justify-center">
@@ -148,7 +143,6 @@ const Profile = ({ userData }) => {
               placeholder="Upload Profile"
               onChange={handleFileInputChange}
             />
-
             <label
               className="custom-file-label absolute top-0 left-0 w-full h-full flex items-center px-[0.75rem] py-[0.375rem] text-[15px] leading-6 overflow-hidden bg-[#0066ff46] text-headingColor font-semibold rounded-lg truncate cursor-pointer"
               htmlFor="customFile"
@@ -157,7 +151,6 @@ const Profile = ({ userData }) => {
             </label>
           </div>
         </div>
-
         <div className="mt-7">
           <button
             type="submit"
