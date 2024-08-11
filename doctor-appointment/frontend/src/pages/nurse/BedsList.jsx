@@ -10,11 +10,7 @@ const BedsList = () => {
   useEffect(() => {
     const fetchBeds = async () => {
       try {
-        const res = await fetch(`${BASE_URL}/beds`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const res = await fetch(`${BASE_URL}/beds`);
         const result = await res.json();
 
         if (!res.ok) {
@@ -38,6 +34,10 @@ const BedsList = () => {
 
   if (error) {
     return <p>Error loading beds: {error}</p>;
+  }
+
+  if (beds.length === 0) {
+    return <p>No beds available at the moment.</p>;
   }
 
   return (

@@ -1,7 +1,6 @@
 import express from 'express';
 import { authenticate, restrict } from '../auth/verifyToken.js';
-import { getCheckoutSession,getAppointments  } from '../controllers/bookingController.js';
-import Booking from '../models/BookingSchema.js';
+import { getCheckoutSession, getAppointments, addFeedback,getFeedback } from '../controllers/bookingController.js';
 
 const router = express.Router();
 
@@ -13,4 +12,8 @@ router.post(
 );
 
 router.get('/appointments', authenticate, restrict(["patient", "admin"]), getAppointments);
+
+// Route pour ajouter un feedback
+router.post("/:bookingId/feedback", authenticate, restrict(["doctor"]), addFeedback);
+router.get("/:bookingId/feedback", authenticate, restrict(["doctor", "patient"]), getFeedback);
 export default router;

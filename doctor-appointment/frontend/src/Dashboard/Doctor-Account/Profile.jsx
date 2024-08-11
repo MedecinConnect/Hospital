@@ -520,6 +520,7 @@ const Profile = ({ doctorData }) => {
             Update Profile
           </button>
         </div>
+        
       </form>
     </div>
   );

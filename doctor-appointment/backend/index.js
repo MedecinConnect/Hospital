@@ -11,6 +11,7 @@ import reviewRoute from "./routes/review.js";
 import bookingRoute from "./routes/booking.js";
 import nurseRoute from "./routes/nurse.js";
 import bedRoute from "./routes/bed.js";
+
 dotenv.config();
 
 const app = express();

@@ -1,7 +1,19 @@
 /* eslint-disable react/prop-types */
+import { useState } from "react";
 import { formatDate } from "../../utils/formatDate";
+import FeedbackForm from "./FeedBackform";
 
-const Appointments = ({ appointments }) => {
+const Appointments = ({ appointments, token }) => {
+  const [selectedAppointment, setSelectedAppointment] = useState(null);
+
+  const handleToggleFeedback = appointmentId => {
+    if (selectedAppointment === appointmentId) {
+      setSelectedAppointment(null);
+    } else {
+      setSelectedAppointment(appointmentId);
+    }
+  };
+
   return (
     <table className="w-full text-sm text-left text-gray-500 ">
       <thead className="text-xs text-gray-700 uppercase bg-gray-50  ">
@@ -21,6 +33,9 @@ const Appointments = ({ appointments }) => {
           <th scope="col" className="px-6 py-3">
             Booked on
           </th>
+          <th scope="col" className="px-6 py-3">
+            Actions
+          </th>
         </tr>
       </thead>
       <tbody>
@@ -33,7 +48,7 @@ const Appointments = ({ appointments }) => {
               <img
                 className="w-10 h-10 rounded-full"
                 src={item.user.photo}
-                alt="Jese image"
+                alt={item.user.name}
               />
               <div className="pl-3">
                 <div className="text-base font-semibold">{item.user.name}</div>
@@ -60,6 +75,19 @@ const Appointments = ({ appointments }) => {
             </td>
             <td className="px-6 py-4">{item.ticketPrice}</td>
             <td className="px-6 py-4">{formatDate(item.createdAt)}</td>
+            <td className="px-6 py-4">
+              <button
+                onClick={() => handleToggleFeedback(item._id)}
+                className="text-blue-600 hover:underline"
+              >
+                {selectedAppointment === item._id
+                  ? "Hide Feedback"
+                  : "Add Feedback"}
+              </button>
+              {selectedAppointment === item._id && (
+                <FeedbackForm bookingId={item._id} token={token} />
+              )}
+            </td>
           </tr>
         ))}
       </tbody>

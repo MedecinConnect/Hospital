@@ -9,7 +9,8 @@ const initial_state = {
   token: localStorage.getItem("token") || "",
   role: localStorage.getItem("role") || "",
   appointments: [],
-  message: ""
+  message: "",
+  error: null,
 };
 
 export const AuthContext = createContext(initial_state);
@@ -37,7 +38,8 @@ const AuthReducer = (state, action) => {
         user: null,
         token: "",
         role: "",
-        message: ""
+        message: "",
+        error: action.payload.error
       };
     case "LOGOUT":
       return {
@@ -52,7 +54,13 @@ const AuthReducer = (state, action) => {
       return {
         ...state,
         appointments: action.payload.appointments,
-        message: action.payload.message
+        message: action.payload.message,
+        error: null,
+      };
+    case "SET_ERROR":
+      return {
+        ...state,
+        error: action.payload.error
       };
     default:
       return state;
@@ -63,10 +71,11 @@ export const AuthContextProvider = ({ children }) => {
   const [state, dispatch] = useReducer(AuthReducer, initial_state);
 
   useEffect(() => {
-    localStorage.setItem("user", JSON.stringify(state.user));
-    localStorage.setItem("token", state.token);
-    localStorage.setItem("role", state.role);
-  }, [state.user, state.token, state.role]);
+    const { user, token, role } = state;
+    localStorage.setItem("user", JSON.stringify(user));
+    localStorage.setItem("token", token);
+    localStorage.setItem("role", role);
+  }, [state]);
 
   const fetchAppointments = async () => {
     if (state.token) {
@@ -92,6 +101,12 @@ export const AuthContextProvider = ({ children }) => {
         });
       } catch (error) {
         console.error('Failed to fetch appointments:', error);
+        dispatch({
+          type: 'SET_ERROR',
+          payload: {
+            error: 'Failed to fetch appointments. Please try again later.'
+          }
+        });
       }
     }
   };
@@ -103,11 +118,7 @@ export const AuthContextProvider = ({ children }) => {
   return (
     <AuthContext.Provider
       value={{
-        user: state.user,
-        token: state.token,
-        role: state.role,
-        appointments: state.appointments,
-        message: state.message,
+        ...state,
         dispatch,
       }}
     >

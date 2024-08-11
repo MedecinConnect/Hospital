@@ -31,25 +31,35 @@ const Header = () => {
   const menuRef = useRef(null);
 
   const stickyHeaderFunc = () => {
-    window.addEventListener("scroll", () => {
-      if (
-        document.body.scrollTop > 80 ||
-        document.documentElement.scrollTop > 80
-      ) {
-        headerRef.current.classList.add("sticky__header");
-      } else {
-        headerRef.current.classList.remove("sticky__header");
-      }
-    });
+    if (headerRef.current) { // Ensure headerRef is defined
+      window.addEventListener("scroll", () => {
+        if (
+          document.body.scrollTop > 80 ||
+          document.documentElement.scrollTop > 80
+        ) {
+          headerRef.current.classList.add("sticky__header");
+        } else {
+          headerRef.current.classList.remove("sticky__header");
+        }
+      });
+    }
   };
 
   useEffect(() => {
     stickyHeaderFunc();
 
-    return () => window.removeEventListener("scroll", stickyHeaderFunc);
+    return () => {
+      if (headerRef.current) { // Ensure event listener is only removed if it was added
+        window.removeEventListener("scroll", stickyHeaderFunc);
+      }
+    };
   }, []);
 
-  const toggleMenu = () => menuRef.current.classList.toggle("show__menu");
+  const toggleMenu = () => {
+    if (menuRef.current) {
+      menuRef.current.classList.toggle("show__menu");
+    }
+  };
 
   return (
     <header ref={headerRef} className="header flex items-center">

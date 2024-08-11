@@ -83,3 +83,55 @@ export const getAppointments = async (req, res) => {
     res.status(500).json({ message: 'Failed to fetch appointments' });
   }
 };
+
+export const addFeedback = async (req, res) => {
+  const { bookingId } = req.params;
+  const { feedback } = req.body;
+
+  try {
+    // Trouver le rendez-vous par son ID
+    const booking = await Booking.findById(bookingId).populate('doctor'); // Assurez-vous de récupérer l'objet complet du docteur
+    if (!booking) {
+      return res.status(404).json({ message: "Booking not found" });
+    }
+
+    // Debugging logs
+    console.log("Booking Doctor ID: ", booking.doctor._id.toString());
+    console.log("User ID: ", req.userId);
+
+    // Vérifier que l'utilisateur actuel est bien le docteur assigné à ce rendez-vous
+    if (booking.doctor._id.toString() !== req.userId) {
+      return res.status(403).json({ message: "Access denied" });
+    }
+
+    // Ajouter le feedback
+    booking.feedback = feedback;
+    await booking.save();
+
+    res.status(200).json({ message: "Feedback added successfully", booking });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+export const getFeedback = async (req, res) => {
+  const { bookingId } = req.params;
+
+  try {
+    // Find the booking by ID and populate the doctor and user fields
+    const booking = await Booking.findById(bookingId).populate('doctor').populate('user');
+    if (!booking) {
+      return res.status(404).json({ message: "Booking not found" });
+    }
+
+    // If no feedback exists, return a 404 with a message
+    if (!booking.feedback) {
+      return res.status(404).json({ message: "No feedback found for this booking" });
+    }
+
+    // Return the feedback
+    res.status(200).json({ feedback: booking.feedback });
+  } catch (error) {
+    console.error("Error retrieving feedback:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};

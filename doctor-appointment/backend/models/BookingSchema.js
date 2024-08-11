@@ -13,10 +13,13 @@ const bookingSchema = new mongoose.Schema(
       required: true,
     },
     ticketPrice: { type: String, required: true },
-
     isPaid: {
       type: Boolean,
       default: true,
+    },
+    feedback: {
+      type: String, // Champ pour stocker le feedback du docteur
+      default: "",
     },
   },
   { timestamps: true }
