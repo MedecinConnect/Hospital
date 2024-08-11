@@ -21,6 +21,10 @@ const bookingSchema = new mongoose.Schema(
       type: String, // Champ pour stocker le feedback du docteur
       default: "",
     },
+    selectedSlot: {
+      type: String, // Ajouter ce champ pour stocker le créneau horaire sélectionné
+      required: true,
+    },
   },
   { timestamps: true }
 );

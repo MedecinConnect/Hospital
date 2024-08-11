@@ -26,7 +26,13 @@ export const getCheckoutSession = async (req, res) => {
 
     console.log("Doctor and user found:", doctor, user);
 
-    const ticketPrice = doctor.ticketPrice; // Assurez-vous que le prix est suffisamment élevé
+    const ticketPrice = doctor.ticketPrice;
+
+    // get the selected slot from the request body
+    const { selectedSlot } = req.body;
+    if (!selectedSlot) {
+      throw new Error("No time slot selected for booking.");
+    }
 
     // create checkout session
     const session = await stripe.checkout.sessions.create({
@@ -60,6 +66,7 @@ export const getCheckoutSession = async (req, res) => {
       user: user._id,
       ticketPrice: ticketPrice,
       session: session.id,
+      selectedSlot, // Save the selected time slot
     });
 
     // Save the booking object to the database

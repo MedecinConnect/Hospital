@@ -72,7 +72,7 @@ const MyBookings = () => {
       )}
 
       {!loading && !error && (
-        <div className="grid grid-cols-1  lg:grid-cols-2 gap-5">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
           {myAppointments?.map((appointment) => (
             <div key={appointment._id} className="bg-white p-5 shadow-md rounded-md">
               {appointment.doctor ? (
@@ -81,14 +81,23 @@ const MyBookings = () => {
                 <p>No doctor assigned to this appointment.</p>
               )}
               <div className="mt-3">
-                <p className="text-sm text-gray-600">Date: {new Date(appointment.createdAt).toLocaleDateString()}</p>
-                <p className="text-sm text-gray-600">Price: ${appointment.ticketPrice}</p>
-                <p className="text-sm text-gray-600">Status: {appointment.isPaid ? 'Paid' : 'Unpaid'}</p>
+                <p className="text-sm text-gray-600">
+                  Date: {new Date(appointment.createdAt).toLocaleDateString()}
+                </p>
+                <p className="text-sm text-gray-600">
+                  Time Slot: {appointment.selectedSlot}
+                </p> {/* Affichage du créneau horaire */}
+                <p className="text-sm text-gray-600">
+                  Price: ${appointment.ticketPrice}
+                </p>
+                <p className="text-sm text-gray-600">
+                  Status: {appointment.isPaid ? 'Paid' : 'Unpaid'}
+                </p>
                 
                 {/* Display Doctor's Feedback if available */}
                 {appointment.feedback && (
                   <div className="mt-2 p-3 bg-gray-100 rounded-md">
-                    <p className="text-sm font-bold">Doctor's Feedback:</p>
+                    <p className="text-sm font-bold">Doctors Feedback:</p>
                     <p className="text-sm text-gray-800">{appointment.feedback}</p>
                   </div>
                 )}
@@ -102,3 +111,4 @@ const MyBookings = () => {
 };
 
 export default MyBookings;
+
