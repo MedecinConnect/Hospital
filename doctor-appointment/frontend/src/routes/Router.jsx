@@ -12,6 +12,7 @@ import DoctorDetails from "../pages/Doctors/DoctorDetails";
 import Contact from "../pages/Contact";
 import CheckoutSuccess from "../pages/CheckoutSuccess";
 import NurseAccount from "../Dashboard/NurseAccount/NurseAccount";
+import Prediction from "../pages/Prediction";
 
 const Router = () => {
   return (
@@ -51,6 +52,7 @@ const Router = () => {
       <Route path="/register" element={<SignUp />} />
       <Route path="/contact" element={<Contact />} />
       <Route path="/checkout-success" element={<CheckoutSuccess />} />
+      <Route path="/prediction" element={<Prediction />} /> 
     </Routes>
   );
 };

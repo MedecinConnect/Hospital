@@ -295,15 +295,7 @@ const Home = () => {
         <BedsList />
       </section>
 
-     <section className="container">
-        <h2 className="heading text-center">Prediction de maladie</h2>
-        <iframe
-          src="http://localhost:8501"
-          width="100%"
-          height="600px"
-          title="Chat with Resumes"
-        ></iframe>
-      </section> 
+     
     </>
   );
 };
