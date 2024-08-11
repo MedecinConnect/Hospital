@@ -1,11 +1,38 @@
 /* eslint-disable react/prop-types */
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import convertTime from "../../utils/convertTime";
 import { BASE_URL, token } from "./../../config";
 
-const SidePanel = ({ ticketPrice, timeSlots, doctorId }) => {
+const SidePanel = ({ ticketPrice, doctorId }) => {
   const [selectedSlot, setSelectedSlot] = useState(""); // État pour le créneau horaire sélectionné
+  const [timeSlots, setTimeSlots] = useState([]); // État pour les créneaux horaires disponibles
+  const [slotError, setSlotError] = useState(""); // État pour les erreurs de créneaux horaires
+
+  // Fetch available time slots for the selected doctor
+  useEffect(() => {
+    const fetchTimeSlots = async () => {
+      try {
+        const response = await fetch(`${BASE_URL}/bookings/doctors/${doctorId}/available-slots`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+    
+        if (!response.ok) {
+          throw new Error("Failed to fetch available time slots.");
+        }
+    
+        const data = await response.json();
+        setTimeSlots(data.availableTimeSlots || []);
+      } catch (error) {
+        setSlotError("Failed to load available time slots.");
+        console.error("Failed to fetch available time slots:", error);
+      }
+    };
+    
+    fetchTimeSlots();
+  }, [doctorId]);
 
   const bookingHandler = async () => {
     if (!selectedSlot) {
@@ -28,11 +55,13 @@ const SidePanel = ({ ticketPrice, timeSlots, doctorId }) => {
 
       const data = await response.json();
 
-      if (data.session.url) {
+      if (data.success && data.session.url) {
         window.location.href = data.session.url;
+      } else {
+        alert(data.message || "Failed to create session");
       }
     } catch (error) {
-      console.log(error);
+      console.error("Error during booking:", error);
     }
   };
 
@@ -53,30 +82,36 @@ const SidePanel = ({ ticketPrice, timeSlots, doctorId }) => {
         <p className="text__para mt-0 font-semibold text-headingColor">
           Temps de rendez-vous:
         </p>
-        <ul className="mt-3">
-          {timeSlots?.map((item, index) => (
-            <li key={index} className="flex items-center justify-between mb-2">
-              <label className="flex items-center">
-                <input
-                  type="radio"
-                  name="timeSlot"
-                  value={`${item.day} ${convertTime(item.startingTime || "00:00")} - ${convertTime(item.endingTime || "00:00")}`}
-                  onChange={handleSlotChange}
-                  className="mr-2"
-                />
-                <span className="text-[15px] leading-6 text-textColor font-semibold">
-                  {item.day.charAt(0).toUpperCase() + item.day.slice(1)}: {convertTime(item.startingTime || "00:00")}
-                  <span> - </span>
-                  {convertTime(item.endingTime || "00:00")}
-                </span>
-              </label>
-            </li>
-          ))}
-        </ul>
+        {slotError ? (
+          <p className="text-red-600">{slotError}</p>
+        ) : (
+          <ul className="mt-3">
+            {timeSlots.length > 0 ? (
+              timeSlots.map((slot, index) => (
+                <li key={index} className="flex items-center justify-between mb-2">
+                  <label className="flex items-center">
+                    <input
+                      type="radio"
+                      name="timeSlot"
+                      value={`${slot.day}, ${slot.startingTime} - ${slot.endingTime}`}
+                      onChange={handleSlotChange}
+                      className="mr-2"
+                    />
+                    <span className="text-[15px] leading-6 text-textColor font-semibold">
+                      {`${slot.day}: ${slot.startingTime} - ${slot.endingTime}`}
+                    </span>
+                  </label>
+                </li>
+              ))
+            ) : (
+              <p>Aucun créneau horaire disponible.</p>
+            )}
+          </ul>
+        )}
       </div>
 
       <button onClick={bookingHandler} className="px-2 btn w-full rounded-md mt-4">
-        Book Appointment
+        Réserver un rendez-vous
       </button>
     </div>
   );

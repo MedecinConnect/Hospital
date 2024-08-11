@@ -13,7 +13,7 @@ export const getCheckoutSession = async (req, res) => {
 
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
-    // get the currently booked doctor
+    // Get the currently booked doctor
     const doctor = await Doctor.findById(req.params.doctorId);
     if (!doctor) {
       throw new Error(`Doctor not found with id: ${req.params.doctorId}`);
@@ -28,13 +28,19 @@ export const getCheckoutSession = async (req, res) => {
 
     const ticketPrice = doctor.ticketPrice;
 
-    // get the selected slot from the request body
+    // Get the selected slot from the request body
     const { selectedSlot } = req.body;
     if (!selectedSlot) {
       throw new Error("No time slot selected for booking.");
     }
 
-    // create checkout session
+    // Check if the selected slot is already booked
+    const existingBooking = await Booking.findOne({ doctor: doctor._id, selectedSlot });
+    if (existingBooking) {
+      return res.status(400).json({ success: false, message: "This time slot is already booked." });
+    }
+
+    // Create checkout session
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       mode: "payment",
@@ -73,7 +79,7 @@ export const getCheckoutSession = async (req, res) => {
     await booking.save();
     console.log("Booking saved:", booking.id);
 
-    // send the created session as a response
+    // Send the created session as a response
     res.status(200).json({ success: true, message: "Success", session });
   } catch (error) {
     console.error("Error creating checkout session:", error);
@@ -82,6 +88,7 @@ export const getCheckoutSession = async (req, res) => {
       .json({ success: false, message: "Error creating checkout session", error: error.message });
   }
 };
+
 export const getAppointments = async (req, res) => {
   try {
     const bookings = await Booking.find({ user: req.userId }).populate('doctor');
@@ -120,6 +127,7 @@ export const addFeedback = async (req, res) => {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
+
 export const getFeedback = async (req, res) => {
   const { bookingId } = req.params;
 
@@ -140,5 +148,36 @@ export const getFeedback = async (req, res) => {
   } catch (error) {
     console.error("Error retrieving feedback:", error);
     res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+// Get available time slots for a doctor
+export const getAvailableTimeSlots = async (req, res) => {
+  try {
+    console.log("Fetching available time slots for doctor:", req.params.doctorId); // Ajout de cette ligne pour vérifier si la route est atteinte
+
+    const { doctorId } = req.params;
+
+    // Find the doctor by ID
+    const doctor = await Doctor.findById(doctorId);
+    if (!doctor) {
+      return res.status(404).json({ message: "Doctor not found" });
+    }
+
+    // Find all bookings for this doctor
+    const bookings = await Booking.find({ doctor: doctorId });
+
+    // Get all time slots of the doctor
+    const timeSlots = doctor.timeSlots;
+
+    // Filter out the time slots that are already booked
+    const availableTimeSlots = timeSlots.filter(slot => {
+      const isBooked = bookings.some(booking => booking.selectedSlot === slot);
+      return !isBooked;
+    });
+
+    res.status(200).json({ availableTimeSlots });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to get available time slots" });
   }
 };

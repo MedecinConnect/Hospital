@@ -22,29 +22,7 @@ const MyBookings = () => {
           },
         });
 
-        const appointmentsWithFeedback = await Promise.all(
-          response.data.appointments.map(async (appointment) => {
-            try {
-              const feedbackResponse = await axios.get(
-                `${BASE_URL}/bookings/${appointment._id}/feedback`,
-                {
-                  headers: {
-                    Authorization: `Bearer ${token}`,
-                  },
-                }
-              );
-              return {
-                ...appointment,
-                feedback: feedbackResponse.data.feedback,
-              };
-            } catch (err) {
-              console.error(`Failed to fetch feedback for booking ${appointment._id}:`, err);
-              return appointment; // Return the appointment without feedback
-            }
-          })
-        );
-
-        setMyAppointments(appointmentsWithFeedback);
+        setMyAppointments(response.data.appointments || []);
       } catch (err) {
         setError('Failed to fetch appointments.');
       } finally {
@@ -73,26 +51,13 @@ const MyBookings = () => {
 
       {!loading && !error && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-          {myAppointments?.map((appointment) => (
+          {myAppointments.map((appointment) => (
             <div key={appointment._id} className="bg-white p-5 shadow-md rounded-md">
-              {appointment.doctor ? (
-                <DoctorCard doctor={appointment.doctor} />
-              ) : (
-                <p>No doctor assigned to this appointment.</p>
-              )}
               <div className="mt-3">
-                <p className="text-sm text-gray-600">
-                  Date: {new Date(appointment.createdAt).toLocaleDateString()}
-                </p>
-                <p className="text-sm text-gray-600">
-                  Time Slot: {appointment.selectedSlot}
-                </p> {/* Affichage du créneau horaire */}
-                <p className="text-sm text-gray-600">
-                  Price: ${appointment.ticketPrice}
-                </p>
-                <p className="text-sm text-gray-600">
-                  Status: {appointment.isPaid ? 'Paid' : 'Unpaid'}
-                </p>
+                <p className="text-sm text-gray-600">Date: {new Date(appointment.createdAt).toLocaleDateString()}</p>
+                <p className="text-sm text-gray-600">Time Slot: {appointment.selectedSlot}</p> {/* Affichage du créneau horaire */}
+                <p className="text-sm text-gray-600">Price: ${appointment.ticketPrice}</p>
+                <p className="text-sm text-gray-600">Status: {appointment.isPaid ? 'Paid' : 'Unpaid'}</p>
                 
                 {/* Display Doctor's Feedback if available */}
                 {appointment.feedback && (
@@ -111,4 +76,3 @@ const MyBookings = () => {
 };
 
 export default MyBookings;
-
