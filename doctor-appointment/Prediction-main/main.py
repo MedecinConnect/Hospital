@@ -18,6 +18,9 @@ def glcm(image):
 
 st.title("Prédiction de maladies à partir d'images")
 
+# Option pour choisir la maladie à prédire
+disease_choice = st.selectbox("Choisissez la maladie à prédire", ["COVID", "Glaucoma"])
+
 # Option pour télécharger une image
 uploaded_file = st.file_uploader("Téléchargez une image", type=["jpg", "png", "jpeg"])
 
@@ -31,19 +34,17 @@ if uploaded_file is not None:
     # Extraire les caractéristiques de l'image (GLCM seulement)
     features_glcm = glcm("temp_image.jpg")
     
-    # Imprimer la forme des caractéristiques extraites
-    st.write(f"Forme des caractéristiques extraites : {len(features_glcm)}")
-
-    # Lire le fichier CSV contenant les caractéristiques pour le COVID
-    csv_file = "Covid/Covid_glcm.csv"  # Chemin du fichier CSV
+    # Chemin du fichier CSV en fonction du choix de maladie
+    if disease_choice == "COVID":
+        csv_file = "Covid/Covid_glcm.csv"
+    else:
+        csv_file = "Glaucoma/Glaucoma_glcm.csv"
+    
     df = pd.read_csv(csv_file, header=None)
     
     # Extraire les caractéristiques du CSV pour comparaison
     X = df.iloc[:, :-1].values  # Toutes les colonnes sauf la dernière
     y = df.iloc[:, -1].values   # La dernière colonne est le label
-    
-    # Imprimer la forme des caractéristiques dans le CSV
-    st.write(f"Forme des caractéristiques dans le CSV : {X.shape[1]}")
     
     if X.shape[1] != len(features_glcm):
         st.error(f"Le nombre de caractéristiques extraites ({len(features_glcm)}) ne correspond pas à celui du CSV ({X.shape[1]}).")
@@ -54,10 +55,10 @@ if uploaded_file is not None:
         prediction = y[closest_match_index]
         
         # Afficher le résultat de la prédiction
-        if prediction == "COVID":
-            st.success("Résultat : Vous avez des risques de COVID.")
+        if prediction == "Glaucoma":
+            st.success("Résultat : Vous avez des risques de glaucome.")
         else:
-            st.success("Résultat : Vous n'avez pas de risques de COVID.")
-    
+            st.success("Résultat : Vous n'avez pas de risques de glaucome.")
+
     # Supprimer l'image temporaire après traitement
     os.remove("temp_image.jpg")

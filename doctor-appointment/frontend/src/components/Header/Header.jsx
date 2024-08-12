@@ -28,7 +28,7 @@ const navLinks = [
   },
   {
     path: "/covid", 
-    display: "Covid",
+    display: "Covid/Glaucoma",
   },
 ];
 
