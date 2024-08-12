@@ -295,7 +295,21 @@ const Home = () => {
         <BedsList />
       </section>
 
-     
+      <section>
+        <div className="container">
+          <h2 className="heading text-center">External Dashboard</h2>
+          <div className="iframe-container">
+            <iframe
+              src="http://localhost:8504/"
+              width="100%"
+              height="600px"
+              title="External Dashboard"
+              style={{ border: "none", borderRadius: "8px" }}
+              allowFullScreen
+            />
+          </div>
+        </div>
+      </section>
     </>
   );
 };

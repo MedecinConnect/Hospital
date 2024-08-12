@@ -26,6 +26,10 @@ const navLinks = [
     path: "/prediction", 
     display: "Prediction",
   },
+  {
+    path: "/covid", 
+    display: "Covid",
+  },
 ];
 
 const Header = () => {

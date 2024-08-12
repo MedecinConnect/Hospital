@@ -27,6 +27,10 @@ def generate_response(prompt):
             temperature=0.7,
         )
         message = response['choices'][0]['message']['content'].strip()
+        
+        # Ajout d'un lien à la fin de la réponse
+        message += "\n\n[Consultez nos docteurs](http://localhost:3000/doctors)"
+        
         return message
     except openai.error.RateLimitError:
         return "Désolé, j'ai dépassé le quota d'utilisation. Veuillez réessayer plus tard ou vérifier votre plan et les détails de facturation."
@@ -70,7 +74,6 @@ questions = [
     "Quels sont les traitements pour les migraines ?",
     "Comment gérer les symptômes de la ménopause ?"
 ]
-
 
 st.selectbox("Choisissez une question :", questions, key="selected_question", on_change=lambda: send_message(st.session_state.selected_question))
 

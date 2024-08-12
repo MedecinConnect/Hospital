@@ -13,6 +13,7 @@ import Contact from "../pages/Contact";
 import CheckoutSuccess from "../pages/CheckoutSuccess";
 import NurseAccount from "../Dashboard/NurseAccount/NurseAccount";
 import Prediction from "../pages/Prediction";
+import Covid from "../pages/Covid";
 
 const Router = () => {
   return (
@@ -53,6 +54,8 @@ const Router = () => {
       <Route path="/contact" element={<Contact />} />
       <Route path="/checkout-success" element={<CheckoutSuccess />} />
       <Route path="/prediction" element={<Prediction />} /> 
+      <Route path="/covid" element={<Covid />} /> 
+
     </Routes>
   );
 };
