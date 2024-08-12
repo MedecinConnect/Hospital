@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import DoctorCard from "../../components/Doctors/DoctorCard";
-import Testimonial from "../../components/Testimonial/Testimonial";
+//import Testimonial from "../../components/Testimonial/Testimonial";
 import { BASE_URL } from "../../config";
 import useFetchData from "../../hooks/useFetchData";
 import HashLoader from "react-spinners/HashLoader";
@@ -77,19 +77,7 @@ const Doctors = () => {
         </div>
       </section>
 
-      <section>
-        <div className="container">
-          <div className="xl:w-[470px] mx-auto">
-            <h2 className="heading text-center">What our patient say</h2>
-            <p className="text__para text-center">
-              World-class care for everyone. Our health System offers unmatched,
-              expert health care.
-            </p>
-          </div>
-
-          <Testimonial />
-        </div>
-      </section>
+      
     </>
   );
 };
