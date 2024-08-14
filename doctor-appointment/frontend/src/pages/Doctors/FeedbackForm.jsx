@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { AiFillStar } from "react-icons/ai";
 import { BASE_URL, token } from "../../config";
 import { toast } from "react-toastify";
 import HashLoader from "react-spinners/HashLoader";
 import { useParams } from "react-router-dom";
+import { AuthContext } from "../../context/AuthContext";
 
 const FeedbackForm = () => {
   const [rating, setRating] = useState(0);
@@ -11,6 +12,8 @@ const FeedbackForm = () => {
   const [hover, setHover] = useState(0);
   const { id } = useParams();
   const [loading, setLoading] = useState(false);
+
+  const { token } = useContext(AuthContext); // Utiliser le contexte pour obtenir le token
 
   const handleReviewSubmit = async e => {
     e.preventDefault();
@@ -27,7 +30,7 @@ const FeedbackForm = () => {
         method: "post",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${token}`, // Utiliser le token depuis le contexte
         },
         body: JSON.stringify({ rating, reviewText }),
       });

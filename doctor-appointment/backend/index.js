@@ -19,7 +19,7 @@ const port = process.env.PORT || 8000;
 
 // Configuration CORS
 const corsOptions = {
-  origin: 'http://localhost:3000', // Remplacez par l'URL de votre frontend
+  origin: 'http://localhost:3000', 
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: true,
   optionsSuccessStatus: 204,
@@ -58,7 +58,7 @@ app.use("/api/v1/reviews", reviewRoute);
 app.use("/api/v1/bookings", bookingRoute);
 app.use("/api/v1/nurses", nurseRoute);
 app.use("/api/v1/beds", bedRoute);
-app.use("/api/v1/appointments", bookingRoute); // Utilisez cette ligne
+app.use("/api/v1/appointments", bookingRoute); 
 // Start server
 app.listen(port, () => {
   connectDB().then(() => {

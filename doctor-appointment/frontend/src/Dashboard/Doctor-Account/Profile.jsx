@@ -1,12 +1,14 @@
 /* eslint-disable react/prop-types */
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { BASE_URL, token } from "../../config";
 import uploadImageToCloudinary from "../../utils/uploadCloudinary";
 import { AiOutlineDelete } from "react-icons/ai";
 
 import { toast } from "react-toastify";
+import { AuthContext } from "../../context/AuthContext";
 
 const Profile = ({ doctorData }) => {
+  const { token, user } = useContext(AuthContext); 
   const [selectedFile, setSelectedFile] = useState(null);
   const [formData, setFormData] = useState({
     name: "",
@@ -55,15 +57,13 @@ const Profile = ({ doctorData }) => {
 
   const updateDoctorHandler = async e => {
     e.preventDefault();
-    console.log(formData);
     try {
       const res = await fetch(`${BASE_URL}/doctors/${doctorData._id}`, {
         method: "put",
         headers: {
           "content-type": "application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${token}`, // Utiliser le token depuis le contexte
         },
-
         body: JSON.stringify(formData),
       });
 
@@ -72,7 +72,7 @@ const Profile = ({ doctorData }) => {
         return toast.error(result.message);
       }
 
-      toast.success("successfully update");
+      toast.success("Successfully updated");
     } catch (err) {
       console.log(err);
     }

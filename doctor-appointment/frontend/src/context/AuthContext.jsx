@@ -5,9 +5,9 @@ import { BASE_URL } from "../config";
 
 
 const initial_state = {
-  user: localStorage.getItem("user") !== null ? JSON.parse(localStorage.getItem("user")) : null,
-  token: localStorage.getItem("token") || "",
-  role: localStorage.getItem("role") || "",
+  user: null,   // Pas d'utilisateur connecté initialement
+  token: "",
+  role: "",
   appointments: [],
   message: "",
   error: null,
@@ -17,14 +17,6 @@ export const AuthContext = createContext(initial_state);
 
 const AuthReducer = (state, action) => {
   switch (action.type) {
-    case "LOGIN_START":
-      return {
-        ...state,
-        user: null,
-        token: "",
-        role: "",
-        message: ""
-      };
     case "LOGIN_SUCCESS":
       return {
         ...state,
@@ -32,24 +24,8 @@ const AuthReducer = (state, action) => {
         token: action.payload.token,
         role: action.payload.role,
       };
-    case "LOGIN_FAILURE":
-      return {
-        ...state,
-        user: null,
-        token: "",
-        role: "",
-        message: "",
-        error: action.payload.error
-      };
     case "LOGOUT":
-      return {
-        ...state,
-        user: null,
-        token: "",
-        role: "",
-        appointments: [],
-        message: ""
-      };
+      return initial_state; // Réinitialisation complète de l'état lors de la déconnexion
     case "SET_APPOINTMENTS":
       return {
         ...state,
@@ -71,11 +47,41 @@ export const AuthContextProvider = ({ children }) => {
   const [state, dispatch] = useReducer(AuthReducer, initial_state);
 
   useEffect(() => {
-    const { user, token, role } = state;
-    localStorage.setItem("user", JSON.stringify(user));
-    localStorage.setItem("token", token);
-    localStorage.setItem("role", role);
-  }, [state]);
+    // Vérifiez si c'est la première fois que l'application est lancée
+    const isFirstLaunch = !localStorage.getItem("app_initialized");
+
+    if (!isFirstLaunch) {
+      const storedUser = localStorage.getItem("user");
+      const storedToken = localStorage.getItem("token");
+      const storedRole = localStorage.getItem("role");
+
+      if (storedUser && storedToken && storedRole) {
+        dispatch({
+          type: "LOGIN_SUCCESS",
+          payload: {
+            user: JSON.parse(storedUser),
+            token: storedToken,
+            role: storedRole,
+          }
+        });
+      }
+    } else {
+      // Marquez l'application comme initialisée
+      localStorage.setItem("app_initialized", true);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (state.user && state.token && state.role) {
+      localStorage.setItem("user", JSON.stringify(state.user));
+      localStorage.setItem("token", state.token);
+      localStorage.setItem("role", state.role);
+    } else {
+      localStorage.removeItem("user");
+      localStorage.removeItem("token");
+      localStorage.removeItem("role");
+    }
+  }, [state.user, state.token, state.role]);
 
   const fetchAppointments = async () => {
     if (state.token) {
@@ -87,10 +93,9 @@ export const AuthContextProvider = ({ children }) => {
           withCredentials: true,
         });
         
-        let message = "";
-        if (response.data.appointments.length > 0) {
-          message = "Vous avez les rendez-vous suivants : " + response.data.appointments.map(app => `Docteur ${app.doctor.name}, Ticket: ${app.ticketPrice}`).join(", ");
-        }
+        const message = response.data.appointments.length > 0
+          ? "Vous avez les rendez-vous suivants : " + response.data.appointments.map(app => `Docteur ${app.doctor.name}, Ticket: ${app.ticketPrice}`).join(", ")
+          : "";
 
         dispatch({
           type: 'SET_APPOINTMENTS',
@@ -112,7 +117,9 @@ export const AuthContextProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    fetchAppointments();
+    if (state.token) {
+      fetchAppointments();
+    }
   }, [state.token]);
 
   return (

@@ -1,13 +1,14 @@
 /* eslint-disable react/prop-types */
 
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import convertTime from "../../utils/convertTime";
 import { BASE_URL, token } from "./../../config";
-
+import { AuthContext } from "../../context/AuthContext";
 const SidePanel = ({ ticketPrice, doctorId }) => {
-  const [selectedSlot, setSelectedSlot] = useState(""); // État pour le créneau horaire sélectionné
-  const [timeSlots, setTimeSlots] = useState([]); // État pour les créneaux horaires disponibles
-  const [slotError, setSlotError] = useState(""); // État pour les erreurs de créneaux horaires
+  const { token } = useContext(AuthContext);  // Utilisation de `useContext` pour accéder au `token`
+  const [selectedSlot, setSelectedSlot] = useState(""); 
+  const [timeSlots, setTimeSlots] = useState([]);
+  const [slotError, setSlotError] = useState("");
 
   // Fetch available time slots for the selected doctor
   useEffect(() => {
@@ -18,11 +19,11 @@ const SidePanel = ({ ticketPrice, doctorId }) => {
             Authorization: `Bearer ${token}`,
           },
         });
-    
+
         if (!response.ok) {
           throw new Error("Failed to fetch available time slots.");
         }
-    
+
         const data = await response.json();
         setTimeSlots(data.availableTimeSlots || []);
       } catch (error) {
@@ -30,9 +31,9 @@ const SidePanel = ({ ticketPrice, doctorId }) => {
         console.error("Failed to fetch available time slots:", error);
       }
     };
-    
+
     fetchTimeSlots();
-  }, [doctorId]);
+  }, [doctorId, token]);  // Ajout de `token` comme dépendance
 
   const bookingHandler = async () => {
     if (!selectedSlot) {
@@ -49,7 +50,7 @@ const SidePanel = ({ ticketPrice, doctorId }) => {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ selectedSlot }), // Inclure le créneau horaire sélectionné dans le corps de la requête
+          body: JSON.stringify({ selectedSlot }), 
         }
       );
 
@@ -66,7 +67,7 @@ const SidePanel = ({ ticketPrice, doctorId }) => {
   };
 
   const handleSlotChange = (e) => {
-    setSelectedSlot(e.target.value); // Mettre à jour l'état avec le créneau sélectionné
+    setSelectedSlot(e.target.value);
   };
 
   return (

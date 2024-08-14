@@ -300,7 +300,7 @@ const Home = () => {
           <h2 className="heading text-center">External Dashboard</h2>
           <div className="iframe-container">
             <iframe
-              src="http://localhost:8504/"
+              src="http://localhost:8503/"
               width="100%"
               height="600px"
               title="External Dashboard"
