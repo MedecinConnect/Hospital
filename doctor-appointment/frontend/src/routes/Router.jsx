@@ -14,7 +14,7 @@ import CheckoutSuccess from "../pages/CheckoutSuccess";
 import NurseAccount from "../Dashboard/NurseAccount/NurseAccount";
 import Prediction from "../pages/Prediction";
 import Covid from "../pages/Covid";
-
+import ManageHospitals from "../components/Hospitals/ManageHospitals";
 const Router = () => {
   return (
     <Routes>
@@ -55,6 +55,7 @@ const Router = () => {
       <Route path="/checkout-success" element={<CheckoutSuccess />} />
       <Route path="/prediction" element={<Prediction />} /> 
       <Route path="/covid" element={<Covid />} /> 
+      <Route path="/ManageHospitals" element={<ManageHospitals />} />
 
     </Routes>
   );

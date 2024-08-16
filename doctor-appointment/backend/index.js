@@ -11,6 +11,8 @@ import reviewRoute from "./routes/review.js";
 import bookingRoute from "./routes/booking.js";
 import nurseRoute from "./routes/nurse.js";
 import bedRoute from "./routes/bed.js";
+import hospitalRoute from "./routes/hospital.js";
+
 
 dotenv.config();
 
@@ -59,7 +61,7 @@ app.use("/api/v1/bookings", bookingRoute);
 app.use("/api/v1/nurses", nurseRoute);
 app.use("/api/v1/beds", bedRoute);
 app.use("/api/v1/appointments", bookingRoute); 
-
+app.use("/api/v1/hospitals", hospitalRoute);
 // Start server
 app.listen(port, () => {
   connectDB().then(() => {

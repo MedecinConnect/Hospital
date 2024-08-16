@@ -5,7 +5,7 @@ import Nurse from "../models/NurseSchema.js";
 
 export const authenticate = async (req, res, next) => {
   const authToken = req.headers.authorization;
-  console.log("authToken:", authToken); // Log added
+  console.log("authToken:", authToken);
 
   if (!authToken || !authToken.startsWith("Bearer ")) {
     console.log("No token or invalid token format");
@@ -14,14 +14,15 @@ export const authenticate = async (req, res, next) => {
 
   try {
     const token = authToken.split(" ")[1];
+    console.log("Token extracted:", token);
     const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
-    console.log("decoded token:", decoded); // Log added
+    console.log("Decoded Token:", decoded);
 
-    req.userId = decoded.id;
-    req.role = decoded.role;
+    req.userId = decoded.id; // Assurez-vous que cette ligne est bien présente
+    req.role = decoded.role; // Assurez-vous que cette ligne est bien présente
     next();
   } catch (err) {
-    console.log("Error verifying token:", err); // Log added
+    console.log("Error verifying token:", err);
     if (err.name === "TokenExpiredError") {
       return res.status(401).json({ success: false, message: "Token has expired" });
     }
@@ -29,6 +30,7 @@ export const authenticate = async (req, res, next) => {
     return res.status(401).json({ success: false, message: "Invalid token" });
   }
 };
+
 
 export const restrict = roles => async (req, res, next) => {
   const userId = req.userId;

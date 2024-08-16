@@ -5,33 +5,6 @@ import { useContext, useEffect, useRef } from "react";
 
 import { AuthContext } from "./../../context/AuthContext";
 
-const navLinks = [
-  {
-    path: "/home",
-    display: "Home",
-  },
-  {
-    path: "/services",
-    display: "Services",
-  },
-  {
-    path: "/doctors",
-    display: "Find a Doctor",
-  },
-  {
-    path: "/contact",
-    display: "Contact",
-  },
-  {
-    path: "/prediction", 
-    display: "Prediction",
-  },
-  {
-    path: "/covid", 
-    display: "Covid/Glaucoma",
-  },
-];
-
 const Header = () => {
   const { user, token, role } = useContext(AuthContext);
 
@@ -68,6 +41,41 @@ const Header = () => {
       menuRef.current.classList.toggle("show__menu");
     }
   };
+
+  const navLinks = [
+    {
+      path: "/home",
+      display: "Home",
+    },
+    {
+      path: "/services",
+      display: "Services",
+    },
+    {
+      path: "/doctors",
+      display: "Find a Doctor",
+    },
+    {
+      path: "/contact",
+      display: "Contact",
+    },
+    {
+      path: "/prediction", 
+      display: "Prediction",
+    },
+    {
+      path: "/covid", 
+      display: "Covid/Glaucoma",
+    },
+    // Ajouter cette condition pour afficher le lien Manage Hospitals uniquement pour les administrateurs
+    ...(role === "admin"
+      ? [{
+          path: "/ManageHospitals",
+          display: "Manage Hospitals",
+        }]
+      : []
+    )
+  ];
 
   return (
     <header ref={headerRef} className="header flex items-center">
