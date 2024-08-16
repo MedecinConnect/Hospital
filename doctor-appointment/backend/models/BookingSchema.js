@@ -18,12 +18,16 @@ const bookingSchema = new mongoose.Schema(
       default: true,
     },
     feedback: {
-      type: String, // Champ pour stocker le feedback du docteur
+      type: String, // Field for storing doctor's feedback
       default: "",
     },
     selectedSlot: {
-      type: String, // Ajouter ce champ pour stocker le créneau horaire sélectionné
+      type: String, // To store the selected time slot
       required: true,
+    },
+    hospital: {
+      type: mongoose.Types.ObjectId,
+      ref: "Hospital", // Reference to the hospital to which the patient is assigned
     },
   },
   { timestamps: true }
@@ -33,7 +37,7 @@ bookingSchema.pre(/^find/, function (next) {
   this.populate("user").populate({
     path: "doctor",
     select: "name",
-  });
+  }).populate("hospital"); // Populate the hospital field when querying bookings
 
   next();
 });

@@ -6,6 +6,7 @@ const HospitalSchema = new mongoose.Schema({
   departments: [{ type: String }],
   photo: { type: String },
   beds: [{ type: mongoose.Schema.Types.ObjectId, ref: "Bed" }],
+  bookings: [{ type: mongoose.Schema.Types.ObjectId, ref: "Booking" }], // New field to store assigned bookings
 });
 
 export default mongoose.model("Hospital", HospitalSchema);
