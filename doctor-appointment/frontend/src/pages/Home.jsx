@@ -15,6 +15,7 @@ import FaqList from "../components/Faq/FaqList";
 import BedsList from "./nurse/BedsList.jsx";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../context/AuthContext.jsx";
+import Chat from "./Chat.jsx";
 
 
 const Home = () => {
@@ -292,18 +293,8 @@ const Home = () => {
       </section>
 
       <section>
-        <div className="container">
-          <h2 className="heading text-center">External Dashboard</h2>
-          <div className="iframe-container">
-            <iframe
-              src="http://localhost:8501/"
-              width="100%"
-              height="600px"
-              title="External Dashboard"
-              style={{ border: "none", borderRadius: "8px" }}
-              allowFullScreen
-            />
-          </div>
+      <div className="container">
+          <Chat />
         </div>
       </section>
     </>
