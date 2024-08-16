@@ -15,7 +15,7 @@ import {
 const router = express.Router();
 
 router.post("/", authenticate, adminAuth, addHospital);
-router.get("/", authenticate, adminAuth, getAllHospitals);
+router.get("/", authenticate, getAllHospitals);
 router.put("/:id", authenticate, adminAuth, updateHospital);
 router.delete("/:id", authenticate, adminAuth, deleteHospital);
 

@@ -67,14 +67,10 @@ const Header = () => {
       path: "/covid", 
       display: "Covid/Glaucoma",
     },
-    // Ajouter cette condition pour afficher le lien Manage Hospitals uniquement pour les administrateurs
-    ...(role === "admin"
-      ? [{
-          path: "/ManageHospitals",
-          display: "Manage Hospitals",
-        }]
-      : []
-    )
+    {
+      path: "/ManageHospitals",
+      display: "Manage Hospitals",
+    },
   ];
 
   return (
