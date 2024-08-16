@@ -17,14 +17,16 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 8000;
 
-// Configuration CORS
-const corsOptions = {
-  origin: 'http://localhost:3000', 
-  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-  credentials: true,
-  optionsSuccessStatus: 204,
-};
+// CORS Configuration
+app.use(cors({
+  origin: '*', // Allows all origins
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allow specific methods
+  allowedHeaders: ['Content-Type', 'Authorization'], // Allow specific headers
+  credentials: true, 
+}));
+app.options('*', cors()); 
 
+// Test route
 app.get("/", (req, res) => {
   res.send("hello server");
 });
@@ -37,7 +39,6 @@ const connectDB = async () => {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
-
     console.log("MongoDB database connected");
   } catch (err) {
     console.error("MongoDB database connection failed:", err.message);
@@ -46,7 +47,6 @@ const connectDB = async () => {
 };
 
 // Middleware
-app.use(cors(corsOptions));
 app.use(express.json());
 app.use(cookieParser());
 
@@ -59,6 +59,7 @@ app.use("/api/v1/bookings", bookingRoute);
 app.use("/api/v1/nurses", nurseRoute);
 app.use("/api/v1/beds", bedRoute);
 app.use("/api/v1/appointments", bookingRoute); 
+
 // Start server
 app.listen(port, () => {
   connectDB().then(() => {

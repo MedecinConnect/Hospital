@@ -10,11 +10,7 @@ import faqImg from "../assets/images/faq-img.png";
 import { BsArrowRight } from "react-icons/bs";
 
 import ServicesList from "../components/Services/ServicesList";
-import featureImg from "../assets/images/feature-img.png";
-import videoIcon from "../assets/images/video-icon.png";
-import avatarIcon from "../assets/images/avatar-icon.png";
 import DoctorsList from "../components/Doctors/DoctorsList";
-import Testimonial from "../components/Testimonial/Testimonial";
 import FaqList from "../components/Faq/FaqList";
 import BedsList from "./nurse/BedsList.jsx";
 import { useContext, useEffect, useState } from "react";
@@ -47,7 +43,7 @@ const Home = () => {
           </div>
         </div>
       )}
-      {/* <section className="hero__section pt-[60px] 2xl:h-[800px]">
+       <section className="hero__section pt-[60px] 2xl:h-[800px]">
         <div className="container">
           <div className="flex flex-col lg:flex-row gap-[90px] items-center justify-between">
             <div>
@@ -102,9 +98,9 @@ const Home = () => {
             </div>
           </div>
         </div>
-      </section> */}
+      </section> 
 
-      {/* <section>
+       <section>
         <div className="container ">
           <div className="lg:w-[470px] mx-auto">
             <h2 className="heading text-center">
@@ -178,11 +174,11 @@ const Home = () => {
             </div>
           </div>
         </div>
-      </section> */}
+      </section> 
 
-      {/* <About /> */}
+      <About /> 
 
-      {/* <section>
+       <section>
         <div className="container">
           <div className="xl:w-[470px] mx-auto">
             <h2 className="heading text-center">Our medical services</h2>
@@ -193,7 +189,7 @@ const Home = () => {
           </div>
           <ServicesList />
         </div>
-      </section> */}
+      </section> 
 
       {/* <section>
         <div className="container">
@@ -261,7 +257,7 @@ const Home = () => {
         </div>
       </section> 
 
-      {/* <section>
+       <section>
         <div className="container">
           <div className="flex justify-between gap-[50px] lg:gap-0">
             <div className="w-1/2 hidden md:block">
@@ -275,7 +271,7 @@ const Home = () => {
             </div>
           </div>
         </div>
-      </section> */}
+      </section> 
 
       {/* <section>
         <div className="container">
@@ -300,7 +296,7 @@ const Home = () => {
           <h2 className="heading text-center">External Dashboard</h2>
           <div className="iframe-container">
             <iframe
-              src="http://localhost:8503/"
+              src="http://localhost:8501/"
               width="100%"
               height="600px"
               title="External Dashboard"

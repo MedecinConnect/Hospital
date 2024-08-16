@@ -1,11 +1,10 @@
 import DoctorCard from "./DoctorCard.jsx";
-import { doctors } from "../../assets/data/doctors";
-import { BASE_URL } from "../../config.js";
+// import { BASE_URL } from "../../config.js";
 import useFetchData from "../../hooks/useFetchData.js";
 import HashLoader from "react-spinners/HashLoader.js";
 
 const DoctorsList = () => {
-  const { data: doctors, loading, error } = useFetchData(`${BASE_URL}/doctors`);
+  const { data: doctors, loading, error } = useFetchData(`http://localhost:5000/api/v1/doctors`);
   return (
     <>
       {loading && (

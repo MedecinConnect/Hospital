@@ -1,11 +1,13 @@
 /* eslint-disable react/prop-types */
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { BASE_URL, token } from "../../config";
 import uploadImageToCloudinary from "../../utils/uploadCloudinary";
 
 import { toast } from "react-toastify";
+import { AuthContext } from "../../context/AuthContext";
 
-const Profile = ({ userData }) => {
+const Profile = () => {
+  const { user } = useContext(AuthContext);
   const [selectedFile, setSelectedFile] = useState(null);
   const [formData, setFormData] = useState({
     name: "",
@@ -18,13 +20,13 @@ const Profile = ({ userData }) => {
 
   useEffect(() => {
     setFormData({
-      name: userData?.name || "",
-      email: userData?.email || "",
-      bloodType: userData?.bloodType || "",
-      gender: userData?.gender || "",
-      photo: userData?.photo || "",
+      name: user?.name || "",
+      email: user?.email || "",
+      bloodType: user?.bloodType || "",
+      gender: user?.gender || "",
+      photo: user?.photo || "",
     });
-  }, [userData]);
+  }, [user]);
 
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -42,7 +44,7 @@ const Profile = ({ userData }) => {
     e.preventDefault();
 
     try {
-      const res = await fetch(`${BASE_URL}/users/${userData._id}`, {
+      const res = await fetch(`${BASE_URL}/users/${user._id}`, {
         method: "put",
         headers: {
           "content-type": "application/json",
@@ -56,7 +58,7 @@ const Profile = ({ userData }) => {
         return toast.error(result.message);
       }
 
-      toast.success("successfully update");
+      toast.success("Successfully updated");
     } catch (err) {
       console.log(err);
     }
