@@ -6,39 +6,44 @@ import { BASE_URL } from '../../config';
 
 import uploadImageToCloudinary from '../../utils/uploadCloudinary';
 import { assignPatientToHospital } from '../AssignPatientToHospital/hospitalAssignments';
+import AssignPatientToBed from '../AssignPatientToHospital/AssignPatientToBed';
 
 const ManageHospitals = () => {
-  const { token, role, user } = useContext(AuthContext); // Get the user from AuthContext
-  const doctorId = user?._id; // Assuming the doctorId is stored in the user's _id field
+  const { token, role, user } = useContext(AuthContext);
+  const doctorId = user?._id;
   const [hospitalData, setHospitalData] = useState({ hospitalName: '', location: '', departments: [], photo: '' });
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
   const [hospitals, setHospitals] = useState([]);
   const [patients, setPatients] = useState([]);
+  const [beds, setBeds] = useState([]);
   const [editingHospitalId, setEditingHospitalId] = useState(null);
   const [selectedBookingId, setSelectedBookingId] = useState('');
   const [selectedHospitalId, setSelectedHospitalId] = useState('');
+  const [selectedBedId, setSelectedBedId] = useState('');
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        // Fetch hospitals
         const hospitalResponse = await fetch(`${BASE_URL}/hospitals`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const hospitalResult = await hospitalResponse.json();
         setHospitals(hospitalResult.data);
 
-        // Fetch patients if the role is doctor
         if (role === 'doctor') {
-          const url = `${BASE_URL}/bookings/doctors/${doctorId}/appointments`; // Using doctorId
+          const url = `${BASE_URL}/bookings/doctors/${doctorId}/appointments`;
           const patientResponse = await fetch(url, {
             headers: { Authorization: `Bearer ${token}` },
           });
           const patientResult = await patientResponse.json();
           setPatients(patientResult.appointments || []);
         }
+
+        const bedResponse = await fetch(`${BASE_URL}/beds`);
+        const bedResult = await bedResponse.json();
+        setBeds(bedResult.data || []);
       } catch (error) {
         console.error('Failed to fetch data:', error);
         setMessage('Failed to fetch data.');
@@ -49,6 +54,28 @@ const ManageHospitals = () => {
 
     fetchData();
   }, [token, doctorId, role]);
+
+  useEffect(() => {
+    if (selectedHospitalId) {
+      fetchBeds(selectedHospitalId);
+    }
+  }, [selectedHospitalId]);
+
+  const fetchBeds = async (hospitalId) => {
+    try {
+      const response = await fetch(`${BASE_URL}/beds?hospitalId=${hospitalId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const result = await response.json();
+      if (result.success) {
+        setBeds(result.data.filter(bed => !bed.isOccupied)); 
+      } else {
+        console.error('Failed to fetch beds:', result.message);
+      }
+    } catch (error) {
+      console.error('Failed to fetch beds:', error);
+    }
+  };
 
   const handleHospitalAction = async (action) => {
     setLoading(true);
@@ -101,10 +128,10 @@ const ManageHospitals = () => {
   const handleAssignPatient = async () => {
     setLoading(true);
     try {
-      await assignPatientToHospital(selectedBookingId, selectedHospitalId, token);
-      setMessage('Patient successfully assigned to the hospital.');
+      await assignPatientToHospital(selectedBookingId, selectedHospitalId, selectedBedId, token); 
+      setMessage('Patient successfully assigned to the hospital and bed.');
     } catch (error) {
-      setMessage('Failed to assign patient to hospital.');
+      setMessage('Failed to assign patient to hospital and bed.');
       console.error(error.message);
     } finally {
       setLoading(false);
@@ -189,7 +216,7 @@ const ManageHospitals = () => {
                   <option value="">Select Patient</option>
                   {patients.map(appointment => (
                     <option key={appointment._id} value={appointment._id}>
-                      {appointment.user.name} {/* Displaying only the patient's name */}
+                      {appointment.user.name}
                     </option>
                   ))}
                 </select>
@@ -202,6 +229,18 @@ const ManageHospitals = () => {
                   {hospitals.map(hospital => (
                     <option key={hospital._id} value={hospital._id}>
                       {hospital.hospitalName}
+                    </option>
+                  ))}
+                </select>
+                <select
+                  className="border p-3 rounded-md mb-4 w-full"
+                  value={selectedBedId}
+                  onChange={(e) => setSelectedBedId(e.target.value)}
+                >
+                  <option value="">Select Bed</option>
+                  {beds.filter(bed => bed.status === 'available').map(bed => (
+                    <option key={bed._id} value={bed._id}>
+                      Bed {bed.bedNumber} - {bed.department}
                     </option>
                   ))}
                 </select>
@@ -247,6 +286,8 @@ const ManageHospitals = () => {
               ))}
             </ul>
           </div>
+
+          <AssignPatientToBed />
         </>
       )}
     </section>

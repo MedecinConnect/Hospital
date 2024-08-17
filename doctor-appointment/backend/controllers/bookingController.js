@@ -92,13 +92,15 @@ export const getAppointments = async (req, res) => {
   try {
     const bookings = await Booking.find({ user: req.userId })
       .populate('doctor')
-      .populate('hospital'); // Add this line to populate the hospital information
+      .populate('hospital')
+      .populate('bed'); // Ensure bed is populated
 
     res.status(200).json({ appointments: bookings });
   } catch (err) {
     res.status(500).json({ message: 'Failed to fetch appointments' });
   }
 };
+
 
 
 export const addFeedback = async (req, res) => {

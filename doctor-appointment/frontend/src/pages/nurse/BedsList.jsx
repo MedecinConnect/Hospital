@@ -10,7 +10,11 @@ const BedsList = () => {
   useEffect(() => {
     const fetchBeds = async () => {
       try {
-        const res = await fetch(`${BASE_URL}/beds`);
+        const res = await fetch(`${BASE_URL}/beds`, {
+          headers: {
+            Authorization: `Bearer ${token}`, // Ensure the API is secured if needed
+          },
+        });
         const result = await res.json();
 
         if (!res.ok) {
@@ -26,7 +30,7 @@ const BedsList = () => {
     };
 
     fetchBeds();
-  }, []);
+  }, []); // Runs only once, on component mount
 
   if (loading) {
     return <p>Loading beds...</p>;
@@ -45,13 +49,26 @@ const BedsList = () => {
       <h2 className="text-3xl font-bold text-center mb-6">Available Beds</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {beds.map((bed) => (
-          <div key={bed._id} className="bg-white shadow-md rounded-lg p-6 transform transition duration-500 hover:scale-105">
-            <p className="text-lg font-semibold"><strong>Bed Number:</strong> {bed.bedNumber}</p>
-            <p className="text-lg font-semibold"><strong>Department:</strong> {bed.department}</p>
+          <div
+            key={bed._id}
+            className={`bg-white shadow-md rounded-lg p-6 transform transition duration-500 hover:scale-105 ${
+              bed.status === 'occupied' ? 'bg-red-200' : 'bg-green-200'
+            }`}
+          >
             <p className="text-lg font-semibold">
-              <strong>Status:</strong> 
-              <span className={`ml-2 py-1 px-3 rounded-full text-white ${bed.status === 'available' ? 'bg-green-500' : 'bg-red-500'}`}>
-                {bed.status}
+              <strong>Bed Number:</strong> {bed.bedNumber}
+            </p>
+            <p className="text-lg font-semibold">
+              <strong>Department:</strong> {bed.department}
+            </p>
+            <p className="text-lg font-semibold">
+              <strong>Status:</strong>
+              <span
+                className={`ml-2 py-1 px-3 rounded-full text-white ${
+                  bed.status === 'occupied' ? 'bg-red-500' : 'bg-green-500'
+                }`}
+              >
+                {bed.status === 'occupied' ? 'Occupied' : 'Available'}
               </span>
             </p>
           </div>
