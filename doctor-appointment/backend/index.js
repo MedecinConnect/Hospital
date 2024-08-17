@@ -12,7 +12,7 @@ import bookingRoute from "./routes/booking.js";
 import nurseRoute from "./routes/nurse.js";
 import bedRoute from "./routes/bed.js";
 import hospitalRoute from "./routes/hospital.js";
-import assignmentsRoute from "./routes/assignments.js"
+import assignmentsRoute from "./routes/assignments.js";
 
 dotenv.config();
 
@@ -21,12 +21,11 @@ const port = process.env.PORT || 8000;
 
 // CORS Configuration
 app.use(cors({
-  origin: '*', // Allows all origins
-  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allow specific methods
-  allowedHeaders: ['Content-Type', 'Authorization'], // Allow specific headers
+  origin: 'http://localhost:3000', // Specify the exact origin here
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], 
+  allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true, 
 }));
-app.options('*', cors()); 
 
 // Test route
 app.get("/", (req, res) => {

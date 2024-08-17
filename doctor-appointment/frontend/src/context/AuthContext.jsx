@@ -96,18 +96,18 @@ export const AuthContextProvider = ({ children }) => {
           headers: {
             Authorization: `Bearer ${state.token}`
           },
-          withCredentials: true,
+          withCredentials: true, // Include credentials
         });
         
         const message = response.data.appointments.length > 0
           ? "You have the following appointments: " + response.data.appointments.map(app => `Doctor ${app.doctor.name}, Ticket: ${app.ticketPrice}`).join(", ")
-          : "No appointments found.";
-
+          : "";
+  
         dispatch({
           type: 'SET_APPOINTMENTS',
           payload: {
             appointments: response.data.appointments,
-            message: message 
+            message: message // Set the message here
           },
         });
       } catch (error) {
@@ -121,6 +121,7 @@ export const AuthContextProvider = ({ children }) => {
       }
     }
   };
+  
 
   // Effect pour récupérer les rendez-vous une fois le token disponible
   useEffect(() => {

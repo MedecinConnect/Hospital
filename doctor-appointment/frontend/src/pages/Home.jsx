@@ -19,28 +19,29 @@ import Chat from "./Chat.jsx";
 
 
 const Home = () => {
-  const { message } = useContext(AuthContext);
+  const { message, role } = useContext(AuthContext); // Get the role from context
   const [showPopup, setShowPopup] = useState(false);
 
-  
   useEffect(() => {
-    if (message) {
+    if (message && role === 'patient') { // Show popup only if the user is a patient
       setShowPopup(true);
       const timer = setTimeout(() => {
         setShowPopup(false);
-      }, 10000); // 30000ms = 30 seconds
+      }, 7000); // 10 seconds
 
-      // Cleanup the timeout if the component unmounts
       return () => clearTimeout(timer);
     }
-  }, [message]);
+  }, [message, role]);
 
   return (
     <>
-     {showPopup && (
-        <div className="fixed top-1/4 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white border border-gray-300 shadow-lg z-50 p-4 rounded-lg max-w-md w-full text-center">
-          <div className="text-lg text-gray-800">
-            {message}
+      {showPopup && (
+        <div className="fixed top-10 right-10 bg-green-500 text-white px-6 py-4 rounded-lg shadow-lg z-50 transform transition-all duration-500 ease-in-out animate-bounce">
+          <div className="flex items-center">
+            <svg className="w-6 h-6 mr-2 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M12 8v4m0 4h.01m9 4h-2a9 9 0 11-18 0H3m12-7v-1a4 4 0 00-8 0v1m8-1v1m0 0h-8v1m8-1v1"></path>
+            </svg>
+            <span className="font-semibold">{message}</span>
           </div>
         </div>
       )}
