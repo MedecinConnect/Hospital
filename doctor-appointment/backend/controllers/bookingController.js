@@ -88,15 +88,18 @@ export const getCheckoutSession = async (req, res) => {
       .json({ success: false, message: "Error creating checkout session", error: error.message });
   }
 };
-
 export const getAppointments = async (req, res) => {
   try {
-    const bookings = await Booking.find({ user: req.userId }).populate('doctor');
+    const bookings = await Booking.find({ user: req.userId })
+      .populate('doctor')
+      .populate('hospital'); // Add this line to populate the hospital information
+
     res.status(200).json({ appointments: bookings });
   } catch (err) {
     res.status(500).json({ message: 'Failed to fetch appointments' });
   }
 };
+
 
 export const addFeedback = async (req, res) => {
   const { bookingId } = req.params;
@@ -179,5 +182,39 @@ export const getAvailableTimeSlots = async (req, res) => {
     res.status(200).json({ availableTimeSlots });
   } catch (error) {
     res.status(500).json({ message: "Failed to get available time slots" });
+  }
+};
+export const getDoctorAppointments = async (req, res) => {
+  console.log('getDoctorAppointments route hit');
+  try {
+    const doctorId = req.params.doctorId;
+    console.log(`Doctor ID: ${doctorId}`);  // Debugging to ensure the ID is correct
+    
+    const bookings = await Booking.find({ doctor: doctorId }).populate('user');
+    
+    if (!bookings || bookings.length === 0) {
+      return res.status(404).json({ success: false, message: 'No appointments found for this doctor.' });
+    }
+
+    res.status(200).json({ success: true, appointments: bookings });
+  } catch (err) {
+    console.error('Error fetching appointments:', err);
+    res.status(500).json({ message: 'Failed to fetch appointments' });
+  }
+};
+
+
+
+// Route pour obtenir tous les rendez-vous
+export const getAllAppointments = async (req, res) => {
+  try {
+    // Récupérer tous les rendez-vous
+    const bookings = await Booking.find().populate('doctor').populate('user');
+    
+    // Répondre avec les rendez-vous
+    res.status(200).json({ success: true, appointments: bookings });
+  } catch (error) {
+    console.error("Error fetching all appointments:", error);
+    res.status(500).json({ success: false, message: "Error fetching all appointments", error: error.message });
   }
 };

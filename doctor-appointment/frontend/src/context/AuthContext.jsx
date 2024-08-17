@@ -5,7 +5,7 @@ import { BASE_URL } from "../config";
 
 
 const initial_state = {
-  user: null,   // Pas d'utilisateur connecté initialement
+  user: null,
   token: "",
   role: "",
   appointments: [],
@@ -25,7 +25,7 @@ const AuthReducer = (state, action) => {
         role: action.payload.role,
       };
     case "LOGOUT":
-      return initial_state; // Réinitialisation complète de l'état lors de la déconnexion
+      return initial_state;
     case "SET_APPOINTMENTS":
       return {
         ...state,
@@ -33,10 +33,15 @@ const AuthReducer = (state, action) => {
         message: action.payload.message,
         error: null,
       };
+    case "SET_MESSAGE":
+      return {
+        ...state,
+        message: action.payload.message,
+      };
     case "SET_ERROR":
       return {
         ...state,
-        error: action.payload.error
+        error: action.payload.error,
       };
     default:
       return state;
@@ -46,8 +51,8 @@ const AuthReducer = (state, action) => {
 export const AuthContextProvider = ({ children }) => {
   const [state, dispatch] = useReducer(AuthReducer, initial_state);
 
+  // Effect pour initialiser l'utilisateur
   useEffect(() => {
-    // Vérifiez si c'est la première fois que l'application est lancée
     const isFirstLaunch = !localStorage.getItem("app_initialized");
 
     if (!isFirstLaunch) {
@@ -66,11 +71,11 @@ export const AuthContextProvider = ({ children }) => {
         });
       }
     } else {
-      // Marquez l'application comme initialisée
       localStorage.setItem("app_initialized", true);
     }
   }, []);
 
+  // Mise à jour du localStorage en fonction de l'état
   useEffect(() => {
     if (state.user && state.token && state.role) {
       localStorage.setItem("user", JSON.stringify(state.user));
@@ -83,6 +88,7 @@ export const AuthContextProvider = ({ children }) => {
     }
   }, [state.user, state.token, state.role]);
 
+  // Fonction pour récupérer les rendez-vous
   const fetchAppointments = async () => {
     if (state.token) {
       try {
@@ -94,14 +100,14 @@ export const AuthContextProvider = ({ children }) => {
         });
         
         const message = response.data.appointments.length > 0
-          ? "Vous avez les rendez-vous suivants : " + response.data.appointments.map(app => `Docteur ${app.doctor.name}, Ticket: ${app.ticketPrice}`).join(", ")
-          : "";
+          ? "You have the following appointments: " + response.data.appointments.map(app => `Doctor ${app.doctor.name}, Ticket: ${app.ticketPrice}`).join(", ")
+          : "No appointments found.";
 
         dispatch({
           type: 'SET_APPOINTMENTS',
           payload: {
             appointments: response.data.appointments,
-            message: message
+            message: message 
           },
         });
       } catch (error) {
@@ -116,6 +122,7 @@ export const AuthContextProvider = ({ children }) => {
     }
   };
 
+  // Effect pour récupérer les rendez-vous une fois le token disponible
   useEffect(() => {
     if (state.token) {
       fetchAppointments();
@@ -123,12 +130,7 @@ export const AuthContextProvider = ({ children }) => {
   }, [state.token]);
 
   return (
-    <AuthContext.Provider
-      value={{
-        ...state,
-        dispatch,
-      }}
-    >
+    <AuthContext.Provider value={{ ...state, dispatch }}>
       {children}
     </AuthContext.Provider>
   );

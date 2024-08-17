@@ -55,14 +55,19 @@ const MyBookings = () => {
             <div key={appointment._id} className="bg-white p-5 shadow-md rounded-md">
               <div className="mt-3">
                 <p className="text-sm text-gray-600">Date: {new Date(appointment.createdAt).toLocaleDateString()}</p>
-                <p className="text-sm text-gray-600">Time Slot: {appointment.selectedSlot}</p> {/* Affichage du créneau horaire */}
+                <p className="text-sm text-gray-600">Time Slot: {appointment.selectedSlot}</p>
                 <p className="text-sm text-gray-600">Price: ${appointment.ticketPrice}</p>
                 <p className="text-sm text-gray-600">Status: {appointment.isPaid ? 'Paid' : 'Unpaid'}</p>
                 
+                {/* Display Hospital Name */}
+                {appointment.hospital && (
+                  <p className="text-sm text-gray-600">Hospital: {appointment.hospital.hospitalName}</p>
+                )}
+
                 {/* Display Doctor's Feedback if available */}
                 {appointment.feedback && (
                   <div className="mt-2 p-3 bg-gray-100 rounded-md">
-                    <p className="text-sm font-bold">Doctors Feedback:</p>
+                    <p className="text-sm font-bold">Doctor's Feedback:</p>
                     <p className="text-sm text-gray-800">{appointment.feedback}</p>
                   </div>
                 )}

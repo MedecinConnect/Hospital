@@ -5,7 +5,9 @@ import {
   getAppointments,
   addFeedback,
   getFeedback,
-  getAvailableTimeSlots, // Importation de la fonction
+  getAvailableTimeSlots,
+  getDoctorAppointments,
+  getAllAppointments // Importation de la fonction
 } from '../controllers/bookingController.js';
 
 const router = express.Router();
@@ -26,9 +28,19 @@ router.get(
   getAvailableTimeSlots
 );
 
-
-// Route pour ajouter un feedback
+// Route to add feedback
 router.post("/:bookingId/feedback", authenticate, restrict(["doctor"]), addFeedback);
 router.get("/:bookingId/feedback", authenticate, restrict(["doctor", "patient"]), getFeedback);
+
+// Route to get all appointments
+router.get('/appointments/all', authenticate, restrict(["admin"]), getAllAppointments);
+
+// Route to get appointments specifically for a doctor
+router.get(
+  '/doctors/:doctorId/appointments', 
+  authenticate, 
+  restrict(["doctor"]), 
+  getDoctorAppointments // Use the function to fetch doctor's appointments
+);
 
 export default router;
