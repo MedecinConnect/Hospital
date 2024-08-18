@@ -1,83 +1,67 @@
-import streamlit as st
+from flask import Flask, request, jsonify
+from pymongo import MongoClient
+from langchain.chat_models import ChatOpenAI
+from langchain.memory import ConversationBufferMemory
+from langchain.vectorstores import FAISS
+from langchain.embeddings import OpenAIEmbeddings
+from langchain.chains import ConversationalRetrievalChain
 from dotenv import load_dotenv
 from PyPDF2 import PdfReader
 from langchain.text_splitter import CharacterTextSplitter
-from langchain.embeddings import OpenAIEmbeddings
-from langchain.vectorstores import FAISS
-from langchain.chat_models import ChatOpenAI
-from langchain.memory import ConversationBufferMemory
-from langchain.chains import ConversationalRetrievalChain
 import os
+from flask_cors import CORS
+from bson import ObjectId
 
-def apply_custom_css():
-    st.markdown("""
-    <style>
-    body {
-        font-family: Arial, sans-serif;
-    }
-    
-    .stButton button {
-        background-color: #0d6efd;
-        color: white;
-        border-radius: 12px;
-        padding: 8px 16px;
-        border: none;
-    }
-    
-    .stTextInput input {
-        padding: 10px;
-        border: 1px solid #ced4da;
-        border-radius: 8px;
-        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
-    }
-    
-    .stTextInput input:focus {
-        border-color: #80bdff;
-        outline: 0;
-        box-shadow: 0 0 8px rgba(128, 189, 255, 0.6);
-    }
-    
-    .stHeader h1 {
-        color: #0d6efd;
-        font-size: 24px;
-        text-align: center;
-        margin-bottom: 20px;
-    }
-    
-    .stAlert {
-        padding: 12px;
-        background-color: #f8d7da;
-        color: #721c24;
-        border-radius: 8px;
-    }
-    
-    .stWrite {
-        padding: 10px;
-        background-color: #f8f9fa;
-        border-radius: 8px;
-        margin-bottom: 10px;
-    }
-    
-    iframe {
-        border-radius: 12px;
-        border: 2px solid #dee2e6;
-        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
-    }
-    </style>
-    """, unsafe_allow_html=True)
+# Load environment variables from the .env file
+load_dotenv()
 
-def get_pdf_text_from_files(file_paths):
-    """Extract text from multiple PDF files."""
+app = Flask(__name__)
+CORS(app)
+
+# MongoDB configuration
+client = MongoClient(os.getenv("MONGO_URI"))
+db = client['test']  # Replace 'test' with your database name if different
+collection_medecins = db['doctors']
+
+# Initialize OpenAI model with API key
+llm = ChatOpenAI(openai_api_key=os.getenv("OPENAI_API_KEY"))
+memory = ConversationBufferMemory(memory_key='chat_history', return_messages=True)
+
+# Initialize OpenAI embeddings
+embeddings = OpenAIEmbeddings()
+
+# Path to save the FAISS index
+faiss_index_path = "faiss_index"
+
+# Function to process PDF files and create a vector store
+def process_pdfs_and_create_vectorstore(pdf_directory):
+    texts = []
+    metadatas = []
+
+    for file_name in os.listdir(pdf_directory):
+        if file_name.endswith('.pdf'):
+            file_path = os.path.join(pdf_directory, file_name)
+            print(f"Processing PDF: {file_path}")  # Print to verify PDF files
+            pdf_text = get_pdf_text(file_path)
+            text_chunks = get_text_chunks(pdf_text)
+            texts.extend(text_chunks)
+            metadatas.extend([{"source": file_name}] * len(text_chunks))
+
+    vectorstore = FAISS.from_texts(texts, embeddings, metadatas)
+    vectorstore.save_local(faiss_index_path)
+    return vectorstore
+
+# Function to get text from a PDF file
+def get_pdf_text(pdf_path):
     text = ""
-    for file_path in file_paths:
-        with open(file_path, "rb") as pdf_file:
-            pdf_reader = PdfReader(pdf_file)
-            for page in pdf_reader.pages:
-                text += page.extract_text()
+    with open(pdf_path, "rb") as file:
+        reader = PdfReader(file)
+        for page in reader.pages:
+            text += page.extract_text()
     return text
 
+# Function to split text into smaller chunks
 def get_text_chunks(text):
-    """Split text into smaller chunks."""
     text_splitter = CharacterTextSplitter(
         separator="\n",
         chunk_size=1000,
@@ -87,16 +71,14 @@ def get_text_chunks(text):
     chunks = text_splitter.split_text(text)
     return chunks
 
-def get_vectorstore(text_chunks):
-    """Create a vector store from text chunks."""
-    embeddings = OpenAIEmbeddings()
-    vectorstore = FAISS.from_texts(texts=text_chunks, embedding=embeddings)
-    return vectorstore
+# Check if the FAISS index already exists, otherwise create it
+if not os.path.exists(faiss_index_path):
+    pdf_directory = "Chat_PDF/pdf"  # Use the path to your PDF files
+    vectorstore = process_pdfs_and_create_vectorstore(pdf_directory)
+else:
+    vectorstore = FAISS.load_local(faiss_index_path, embeddings)
 
-def get_conversation_chain(vectorstore):
-    """Create the conversation chain using the vector store."""
-    llm = ChatOpenAI()
-    memory = ConversationBufferMemory(memory_key='chat_history', return_messages=True)
+def get_conversation_chain():
     conversation_chain = ConversationalRetrievalChain.from_llm(
         llm=llm,
         retriever=vectorstore.as_retriever(),
@@ -104,64 +86,56 @@ def get_conversation_chain(vectorstore):
     )
     return conversation_chain
 
-def process_files_and_setup():
-    """Automatically process PDF files and set up the conversation."""
-    pdf_directory = "C:/Users/user/Desktop/Chat_PDF/Chat_PDF"  # Replace with your actual path
+conversation_chain = get_conversation_chain()
 
-    preloaded_pdf_paths = [os.path.join(pdf_directory, f) for f in os.listdir(pdf_directory) if f.endswith('.pdf')]
+@app.route('/diagnostic', methods=['POST'])
+def diagnostic():
+    data = request.json
+    question = data.get('question')
 
-    if not preloaded_pdf_paths:
-        st.error("No PDF files found in the specified directory.")
-        return False
-    else:
-        raw_text = get_pdf_text_from_files(preloaded_pdf_paths)
+    # First try to answer the question based on the PDF content
+    response = conversation_chain({'question': question})
+    last_message = response['chat_history'][-1].content
 
-        text_chunks = get_text_chunks(raw_text)
-        st.session_state.text_chunks = text_chunks  # Store text chunks in session state
+    # Check if the AI response indicates it couldn't find an answer
+    if not any(keyword in last_message.lower() for keyword in ["cancer", "glaucome", "Cardiologie".lower()]):
+        # If not, return a response indicating that no relevant information was found
+        last_message = "Aucune information pertinente n'a été trouvée dans les PDF fournis. Veuillez consulter un professionnel de la santé pour un diagnostic médical approprié."
 
-        st.session_state.vectorstore = get_vectorstore(text_chunks)
+    # Logic to detect multiple diagnostics
+    diagnostics = []
+    if "cancer" in question.lower():
+        diagnostics.append("cancer")
+    if "glaucome" in question.lower():
+        diagnostics.append("glaucome")
 
-        st.session_state.conversation = get_conversation_chain(st.session_state.vectorstore)
-        return True
+    # Only add diagnostics if there are specific terms found
+    diagnostic_str = ", ".join(diagnostics) if diagnostics else "Aucun diagnostic préliminaire"
 
-def handle_userinput(user_question):
-    if st.session_state.conversation is None:
-        st.error("Error processing the documents.")
-        return
+    # Find specialists in MongoDB
+    specialistes = []
+    if diagnostics:  # Only search for specialists if there are diagnostics
+        for diag in diagnostics:
+            medecins = list(collection_medecins.find({"specialization": diag}))
+            # Convert ObjectId to string for each doctor
+            for medecin in medecins:
+                medecin['_id'] = str(medecin['_id'])
+                # Convert ObjectId in reviews if present
+                if 'reviews' in medecin:
+                    medecin['reviews'] = [str(review_id) for review_id in medecin['reviews']]
+            specialistes.extend(medecins)
 
-    # Add context to the question
-    contextual_question = f"As a doctor, answer this question based on the documents: {user_question}"
+    # Prepare the response data
+    response_data = {
+        'diagnostic': diagnostic_str,
+        'response': last_message,
+        'specialistes': specialistes
+    }
 
-    relevant_documents = st.session_state.vectorstore.similarity_search(contextual_question, k=1)
-    
-    if relevant_documents and len(relevant_documents) > 0:
-        response = st.session_state.conversation({'question': contextual_question})
-        if response and response['chat_history']:
-            last_message = response['chat_history'][-1].content
-            st.write(last_message)
-    else:
-        st.write("Je n'ai pas de réponse pour cette question.")
+    # Debugging: print the response data to verify
+    print(response_data)
 
-def main():
-    load_dotenv()
-    st.set_page_config(page_title="Chat avec vos PDF", page_icon="📄")
-
-    apply_custom_css()
-
-    if "conversation" not in st.session_state:
-        st.session_state.conversation = None
-    if "text_chunks" not in st.session_state:
-        st.session_state.text_chunks = None
-
-    if process_files_and_setup():
-        st.header("Chat basé sur vos documents PDF")
-
-        user_question = st.text_input("Posez une question concernant vos documents:")
-
-        if user_question:
-            handle_userinput(user_question)
-    else:
-        st.error("Le traitement des fichiers PDF a échoué.")
+    return jsonify(response_data)
 
 if __name__ == '__main__':
-    main()
+    app.run(debug=True, port=5005)
