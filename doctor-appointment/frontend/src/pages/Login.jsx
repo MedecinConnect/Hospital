@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { BASE_URL } from "../config";
 import { AuthContext } from "../context/AuthContext";
 import { toast } from "react-toastify";
@@ -12,7 +12,7 @@ const Login = () => {
   });
   const [loading, setLoading] = useState(false);
 
-  const { dispatch } = useContext(AuthContext);
+  const { token, dispatch } = useContext(AuthContext); // Get token from context
 
   const navigate = useNavigate();
 
@@ -56,6 +56,11 @@ const Login = () => {
       setLoading(false);
     }
   };
+
+  // Redirect if already logged in
+  if (token) {
+    return <Navigate to="/home" replace />;
+  }
 
   return (
     <section className="px-5 md:px-0">

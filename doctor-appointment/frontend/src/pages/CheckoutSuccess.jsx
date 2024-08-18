@@ -1,9 +1,19 @@
-import { Link } from "react-router-dom";
+import { useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 const CheckoutSuccess = () => {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // Redirect after a delay, or conditionally if needed
+    setTimeout(() => {
+      navigate('/home');
+    }, 3000); // 3 seconds delay, adjust as needed
+  }, [navigate]);
+
   return (
     <div className="bg-gray-100 h-screen">
-      <div className="bg-white p-6  md:mx-auto">
+      <div className="bg-white p-6 md:mx-auto">
         <svg
           viewBox="0 0 24 24"
           className="text-green-600 w-16 h-16 mx-auto my-6"

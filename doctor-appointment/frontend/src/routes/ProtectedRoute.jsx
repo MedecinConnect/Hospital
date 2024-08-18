@@ -7,7 +7,7 @@ function ProtectedRoute({ children, allowedRoles }) {
   const { token, role } = useContext(AuthContext);
 
   if (!token || !allowedRoles.includes(role)) {
-    return <Navigate to="/login" replace={true} />;
+    return <Navigate to="/login" replace />;
   }
 
   return children;
