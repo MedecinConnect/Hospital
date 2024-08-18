@@ -100,7 +100,7 @@ def get_conversation_chain(vectorstore):
     conversation_chain = ConversationalRetrievalChain.from_llm(
         llm=llm,
         retriever=vectorstore.as_retriever(),
-        memory=memory,
+        memory=memory
     )
     return conversation_chain
 
@@ -129,10 +129,13 @@ def handle_userinput(user_question):
         st.error("Error processing the documents.")
         return
 
-    relevant_documents = st.session_state.vectorstore.similarity_search(user_question, k=1)
+    # Add context to the question
+    contextual_question = f"As a doctor, answer this question based on the documents: {user_question}"
+
+    relevant_documents = st.session_state.vectorstore.similarity_search(contextual_question, k=1)
     
     if relevant_documents and len(relevant_documents) > 0:
-        response = st.session_state.conversation({'question': user_question})
+        response = st.session_state.conversation({'question': contextual_question})
         if response and response['chat_history']:
             last_message = response['chat_history'][-1].content
             st.write(last_message)
