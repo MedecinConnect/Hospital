@@ -71,11 +71,12 @@ const MyBookings = () => {
 
                 {/* Display Doctor's Feedback if available */}
                 {appointment.feedback && (
-                  <div className="mt-2 p-3 bg-gray-100 rounded-md">
-                    <p className="text-sm font-bold">Doctors Feedback:</p>
-                    <p className="text-sm text-gray-800">{appointment.feedback}</p>
-                  </div>
-                )}
+  <div className="mt-2 p-3 bg-gray-100 rounded-md">
+    <p className="text-sm font-bold">Doctors Feedback:</p>
+    <p className="text-sm text-gray-800">{appointment.feedback}</p>
+  </div>
+)}
+
               </div>
             </div>
           ))}

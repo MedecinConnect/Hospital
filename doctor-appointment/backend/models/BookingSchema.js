@@ -46,6 +46,9 @@ const BookingSchema = new mongoose.Schema({
   feedback: {
     type: String,
   },
+  feedbackImage: {
+    type: String, // New field for storing image URL
+  },
   createdAt: {
     type: Date,
     default: Date.now

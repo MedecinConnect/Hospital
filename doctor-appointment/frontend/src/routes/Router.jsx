@@ -15,6 +15,7 @@ import NurseAccount from "../Dashboard/NurseAccount/NurseAccount";
 import Prediction from "../pages/Prediction";
 import Covid from "../pages/Covid";
 import ManageHospitals from "../components/Hospitals/ManageHospitals";
+import Profile from "../Dashboard/Admin-Account/Profile";
 const Router = () => {
   return (
     <Routes>
@@ -56,6 +57,7 @@ const Router = () => {
       <Route path="/prediction" element={<Prediction />} /> 
       <Route path="/covid" element={<Covid />} /> 
       <Route path="/ManageHospitals" element={<ManageHospitals />} />
+      <Route path="/admins/profile/me" element={<Profile />} />
 
     </Routes>
   );

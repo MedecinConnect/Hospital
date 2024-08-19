@@ -13,7 +13,6 @@ import bedRoute from './routes/bed.js';
 import hospitalRoute from './routes/hospital.js';
 import assignmentsRoute from './routes/assignments.js';
 import stripeWebhook from './routes/stripeWebhook.js'; 
-
 dotenv.config();
 
 const app = express();

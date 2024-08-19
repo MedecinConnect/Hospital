@@ -12,7 +12,7 @@ const Header = () => {
   const menuRef = useRef(null);
 
   const stickyHeaderFunc = () => {
-    if (headerRef.current) { // Ensure headerRef is defined
+    if (headerRef.current) {
       window.addEventListener("scroll", () => {
         if (
           document.body.scrollTop > 80 ||
@@ -30,7 +30,7 @@ const Header = () => {
     stickyHeaderFunc();
 
     return () => {
-      if (headerRef.current) { // Ensure event listener is only removed if it was added
+      if (headerRef.current) {
         window.removeEventListener("scroll", stickyHeaderFunc);
       }
     };
@@ -60,11 +60,11 @@ const Header = () => {
       display: "Contact",
     },
     {
-      path: "/prediction", 
+      path: "/prediction",
       display: "Prediction",
     },
     {
-      path: "/covid", 
+      path: "/covid",
       display: "Covid/Glaucoma",
     },
     {
@@ -89,7 +89,7 @@ const Header = () => {
                 <li key={index}>
                   <NavLink
                     to={link.path}
-                    className={navClass =>
+                    className={(navClass) =>
                       navClass.isActive
                         ? "text-[#0067FF] font-[600] text-[16px] leading-7"
                         : "text-textColor font-[500] text-[16px] leading-7"
@@ -112,6 +112,8 @@ const Header = () => {
                       ? "/doctors/profile/me"
                       : role === "nurse"
                       ? "/nurses/profile/me"
+                      : role === "admin"
+                      ? "/admins/profile/me" // Admin profile link
                       : "/users/profile/me"
                   } `}
                 >
@@ -125,11 +127,13 @@ const Header = () => {
                 </Link>
               </div>
             ) : (
-              <Link to="/login">
-                <button className="bg-buttonBgColor py-2 px-6 rounded-[50px] text-white font-[600] h-[44px] flex items-center justify-center">
-                  Log In
-                </button>
-              </Link>
+              role === "admin" && ( // Only show login if the user is admin and not logged in
+                <Link to="/login">
+                  <button className="bg-buttonBgColor py-2 px-6 rounded-[50px] text-white font-[600] h-[44px] flex items-center justify-center">
+                    Log In
+                  </button>
+                </Link>
+              )
             )}
 
             <span className="md:hidden" onClick={toggleMenu}>

@@ -151,25 +151,35 @@ export const paymentSuccess = async (req, res) => {
 };
 
 export const getAppointments = async (req, res) => {
-    try {
-      const bookings = await Booking.find({ user: req.userId })
-        .populate({
-          path: 'user',
-          select: 'name photo email gender', // Select the fields you need
-        })
-        .populate({
-          path: 'doctor',
-          select: 'name specialization', // Select the fields you need
-        });
-  
-      console.log("Bookings found:", bookings);  // Log the bookings found
-  
-      res.status(200).json({ appointments: bookings });
-    } catch (err) {
-      console.error("Failed to fetch appointments:", err);
-      res.status(500).json({ message: 'Failed to fetch appointments' });
-    }
-  };
+  try {
+    // Find all bookings for the user and populate related fields
+    const bookings = await Booking.find({ user: req.userId })
+      .populate({
+        path: 'user',
+        select: 'name photo email gender', // Select the fields you need
+      })
+      .populate({
+        path: 'doctor',
+        select: 'name specialization', // Select the fields you need
+      })
+      .populate({
+        path: 'hospital', // Populate hospital details
+        select: 'hospitalName location', // Select the fields you need
+      })
+      .populate({
+        path: 'bed', // Populate bed details
+        select: 'bedNumber department', // Select the fields you need
+      });
+
+    console.log("Bookings found:", bookings); // Log the bookings found
+
+    res.status(200).json({ appointments: bookings });
+  } catch (err) {
+    console.error("Failed to fetch appointments:", err);
+    res.status(500).json({ message: 'Failed to fetch appointments' });
+  }
+};
+
   
 
 
@@ -178,22 +188,18 @@ export const addFeedback = async (req, res) => {
   const { feedback } = req.body;
 
   try {
-    // Trouver le rendez-vous par son ID
-    const booking = await Booking.findById(bookingId).populate('doctor'); // Assurez-vous de récupérer l'objet complet du docteur
+    // Find the booking by its ID
+    const booking = await Booking.findById(bookingId).populate('doctor');
     if (!booking) {
       return res.status(404).json({ message: "Booking not found" });
     }
 
-    // Debugging logs
-    console.log("Booking Doctor ID: ", booking.doctor._id.toString());
-    console.log("User ID: ", req.userId);
-
-    // Vérifier que l'utilisateur actuel est bien le docteur assigné à ce rendez-vous
+    // Check that the current user is the doctor assigned to this booking
     if (booking.doctor._id.toString() !== req.userId) {
       return res.status(403).json({ message: "Access denied" });
     }
 
-    // Ajouter le feedback
+    // Add the feedback to the booking
     booking.feedback = feedback;
     await booking.save();
 
@@ -203,22 +209,22 @@ export const addFeedback = async (req, res) => {
   }
 };
 
+// Get Feedback for a Booking
 export const getFeedback = async (req, res) => {
   const { bookingId } = req.params;
 
   try {
-    // Find the booking by ID and populate the doctor and user fields
+    // Find the booking by ID and populate the related fields
     const booking = await Booking.findById(bookingId).populate('doctor').populate('user');
     if (!booking) {
       return res.status(404).json({ message: "Booking not found" });
     }
 
-    // If no feedback exists, return a 404 with a message
+    // Check if feedback exists
     if (!booking.feedback) {
       return res.status(404).json({ message: "No feedback found for this booking" });
     }
 
-    // Return the feedback
     res.status(200).json({ feedback: booking.feedback });
   } catch (error) {
     console.error("Error retrieving feedback:", error);
