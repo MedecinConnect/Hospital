@@ -7,7 +7,8 @@ import {
   getFeedback,
   getAvailableTimeSlots,
   getDoctorAppointments,
-  getAllAppointments // Importation de la fonction
+  getAllAppointments,
+  paymentSuccess // Importation de la fonction
 } from '../controllers/bookingController.js';
 
 const router = express.Router();
@@ -19,7 +20,7 @@ router.post(
   getCheckoutSession
 );
 
-router.get('/appointments', authenticate, restrict(["patient", "admin"]), getAppointments);
+router.get('/appointments', authenticate, restrict(["patient", "admin", "doctor"]), getAppointments);
 
 router.get(
   '/doctors/:doctorId/available-slots', 
@@ -42,5 +43,7 @@ router.get(
   restrict(["doctor"]), 
   getDoctorAppointments // Use the function to fetch doctor's appointments
 );
+
+router.get('/payment-success', paymentSuccess);
 
 export default router;

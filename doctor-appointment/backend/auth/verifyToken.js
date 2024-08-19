@@ -31,7 +31,6 @@ export const authenticate = async (req, res, next) => {
   }
 };
 
-
 export const restrict = roles => async (req, res, next) => {
   const userId = req.userId;
   console.log("User ID from token:", userId); // Log added
@@ -40,6 +39,8 @@ export const restrict = roles => async (req, res, next) => {
   console.log("User found:", user); // Log added
 
   if (!user || !roles.includes(user.role)) {
+    console.log("User Role:", user.role); // Log the user's role
+    console.log("Allowed Roles:", roles);  
     return res.status(401).json({ success: false, message: "You're not authorized" });
   }
 

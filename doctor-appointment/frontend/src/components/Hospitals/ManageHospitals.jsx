@@ -286,12 +286,10 @@ const ManageHospitals = () => {
               ))}
             </ul>
           </div>
-
-          {role === 'doctor' && <AssignPatientToBed />} {/* Only show AssignPatientToBed component for doctors */}
         </>
       )}
     </section>
   );
 };
- 
+
 export default ManageHospitals;

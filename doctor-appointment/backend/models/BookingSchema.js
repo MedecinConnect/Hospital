@@ -11,6 +11,14 @@ const BookingSchema = new mongoose.Schema({
     ref: 'User',
     required: true
   },
+  userName: {
+    type: String,
+    required: true  // Assuming you want to store it directly, but normally this is redundant
+  },
+  userPhoto: {
+    type: String,
+    required: true  // Same as above
+  },
   hospital: {
     type: mongoose.Schema.ObjectId,
     ref: 'Hospital',
@@ -21,7 +29,7 @@ const BookingSchema = new mongoose.Schema({
   },
   nurse: {
     type: mongoose.Schema.ObjectId,
-    ref: 'Nurse', // Reference to the Nurse model
+    ref: 'Nurse',
   },
   ticketPrice: {
     type: Number,

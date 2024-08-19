@@ -1,15 +1,29 @@
 import { useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link} from "react-router-dom";
 
 const CheckoutSuccess = () => {
-  const navigate = useNavigate();
+  const handlePaymentSuccess = async (sessionId) => {
+    try {
+      const response = await fetch(`/api/payment-success?sessionId=${sessionId}`);
+      const data = await response.json();
+      if (data.success) {
+        console.log("Payment confirmed and booking updated");
+      } else {
+        console.error("Payment confirmation failed:", data.message);
+      }
+    } catch (error) {
+      console.error("Error confirming payment:", error);
+    }
+  };
 
   useEffect(() => {
-    // Redirect after a delay, or conditionally if needed
-    setTimeout(() => {
-      navigate('/home');
-    }, 3000); // 3 seconds delay, adjust as needed
-  }, [navigate]);
+    // Assuming sessionId is passed as a query parameter in the URL after payment
+    const urlParams = new URLSearchParams(window.location.search);
+    const sessionId = urlParams.get('sessionId');
+    if (sessionId) {
+      handlePaymentSuccess(sessionId);
+    }
+  }, []);
 
   return (
     <div className="bg-gray-100 h-screen">
@@ -32,12 +46,12 @@ const CheckoutSuccess = () => {
           </p>
           <p> Have a great day! </p>
           <div className="py-10 text-center">
-            <Link
-              to="/home"
+            <a
+              href="/home"
               className="px-12 bg-buttonBgColor text-white font-semibold py-3"
             >
               Go Back To Home
-            </Link>
+            </a>
           </div>
         </div>
       </div>
